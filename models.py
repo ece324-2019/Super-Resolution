@@ -107,7 +107,7 @@ class Discriminator1(nn.Module):
     self.batch_norm6 = nn.BatchNorm2d(512)
     self.conv8 = nn.Conv2d(in_channels=512, out_channels=512, kernel_size=3, stride=2, padding=1)
     self.batch_norm7 = nn.BatchNorm2d(512)
-    self.pool1 = nn.AdaptiveAvgPool2d(1).cuda()  # added cuda
+    self.pool1 = nn.AdaptiveAvgPool2d(1)
     self.conv9 = nn.Conv2d(in_channels=512, out_channels=1024, kernel_size=1) ### maybe not need this many layers --> if so, change the in_channels of the next line and remove this line
     self.conv10 = nn.Conv2d(in_channels=1024, out_channels=1, kernel_size=1)
   
