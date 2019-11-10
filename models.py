@@ -88,9 +88,9 @@ class upsample_block(nn.Module):
 
 
 # Model (Discriminator) --> binary classification (real vs. created)
-class Discriminator(nn.Module):
+class Discriminator1(nn.Module):
   def __init__(self):
-    super(Discriminator, self).__init__()
+    super(Discriminator1, self).__init__()
     self.name = "Discriminator"
     self.conv1 = nn.Conv2d(in_channels=3, out_channels=64, kernel_size=3, stride=1, padding=1)
     self.conv2 = nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, stride=2, padding=1),
