@@ -10,6 +10,8 @@ from skimage.measure import compare_psnr
 from tqdm import tqdm
 from torch.autograd import Variable
 
+import torchvision.utils as utils # Used in Training loop
+
 torch.manual_seed(1000)
 
 
@@ -159,10 +161,6 @@ class Discriminator1(nn.Module):
 
 # GAN Training code
 
-# For github pushing:
-# from models import *
-
-
 def load_model(gen_lr, dis_lr, resid_block_num, num_channel, kernel_size, sample_fac):
     gen1 = Generator1(num_blocks=resid_block_num, upsample_factor=sample_fac, out_channel_num=num_channel,
                       kernel_size=kernel_size, stride_num=1)
@@ -225,7 +223,6 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
         D.train()
         for i, batch in enumerate(train_loader):
             data1, label = batch
-            print('batch')
             num_samples_trained += batch_size
 
             # Training the Discriminator
@@ -275,8 +272,8 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
             actual_G_loss.backward()
             G_optim.step()
 
-            valid_loss_G, training_loss_G = evaluate_valid(val_loader, actual_G_loss.item(), fake_input, content_loss_func, adv_loss_func, training_loss_G)
-            # print('[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f' %(epoch, 25, i, len(training_loader), errD.data[0], errG.data[0])) ############### --> idk
+            #valid_loss_G, training_loss_G = evaluate_valid(val_loader, actual_G_loss.item(), fake_input, content_loss_func, adv_loss_func, training_loss_G, G, D)
+            print('[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f' %(epoch, 25, i, len(train_loader), error_D.data[0], actual_G_loss.data[0])) ############### --> idk
 
         print("Epoch Ended")
         torch.save(D.state_dict(), "Model Checkpoints/{}.pt".format(D.name))
@@ -285,9 +282,9 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
         print("Real Image Accuracy (Discriminator)", correct_D / len(train_loader.dataset))
         print("Combined Accuracy (Discriminator)", ((corr_fake_D + correct_D) / (2 * len(train_loader.dataset))))
         corr_fake_D, correct_D = 0, 0
-        vutils.save_image(real[0], '%s/real_samples_epoch_%03d.png' % ("./results", epoch), normalize=True)
-        fake = netG(noise.float())
-        vutils.save_image(fake[0], '%s/fake_samples_epoch_%03d.png' % ("./results", epoch), normalize=True)
+        utils.save_image(real_img[0], '/content/gdrive/My Drive/ECE324 Project/Model Checkpoints/real_images_Epoch_%03d.png' % (epoch), normalize=True)
+        fake11 = G(noise1.float())
+        utils.save_image(fake11[0], '/content/gdrive/My Drive/ECE324 Project/Model Checkpoints/fake_images_Epoch_%03d.png' % (epoch), normalize=True)
 
     training_loss_G = np.array(training_loss_G)
     valid_loss_G = np.array(valid_loss_G)
@@ -317,7 +314,7 @@ train_loader, val_loader, test_loader = load_data(HR_train, HR_valid, HR_test, L
 
 
 # Evaluation on validation dataset
-def evaluate_valid(valid_loader, actual_G_loss1, fake_input1, content_loss_func, adv_loss_func, training_loss_G):
+def evaluate_valid(valid_loader, actual_G_loss1, fake_input1, content_loss_func, adv_loss_func, training_loss_G, G, D):
   psnr_G = []
   psnr_I = []
   valid_loss_G = []
