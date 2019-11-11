@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1c3c11c7-31c9-4237-90d8-b2195369d8b6" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/Super-Resolution.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Super-Resolution.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data_processing/chop.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data_processing/chop.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/models.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -80,6 +76,14 @@
       <option name="presentableId" value="Default" />
       <updated>1573350867090</updated>
     </task>
+    <task id="LOCAL-00001" summary="Save images into numpy files">
+      <created>1573458334449</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1573458334449</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -94,5 +98,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Save images into numpy files" />
+    <option name="LAST_COMMIT_MESSAGE" value="Save images into numpy files" />
   </component>
 </project>
