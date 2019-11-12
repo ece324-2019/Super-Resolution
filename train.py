@@ -212,6 +212,23 @@ if __name__ == "__main__":
     LR_train = np.load('LR_train.npy', allow_pickle=True)
     LR_valid = np.load('LR_valid.npy', allow_pickle=True)
     LR_test = np.load('LR_test.npy', allow_pickle=True)
+
+    # resize data
+    for i in range(len(LR_train)):
+        LR_train[i] = np.array(LR_train[i])[0:162, 0:139, :]
+    for i in range(len(LR_valid)):
+        LR_valid[i] = np.array(LR_valid[i])[0:162, 0:139, :]
+    for i in range(len(LR_test)):
+        LR_test[i] = np.array(LR_test[i])[0:162, 0:139, :]
+    for i in range(len(HR_train)):
+        HR_train[i] = np.array(HR_train[i])[0:162 * 4, 0:139 * 4, :]
+    for i in range(len(HR_valid)):
+        HR_valid[i] = np.array(HR_valid[i])[0:162 * 4, 0:139 * 4, :]
+    for i in range(len(HR_test)):
+        HR_test[i] = np.array(HR_test[i])[0:162 * 4, 0:139 * 4, :]
+
+    print('resize done')
+
     batch_size1 = 16
     train_loader, val_loader, test_loader = load_data(HR_train, HR_valid, HR_test, LR_train, LR_valid, LR_test, batch_size1)
 
