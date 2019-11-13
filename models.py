@@ -154,10 +154,11 @@ class Discriminator1(nn.Module):
         x = swish_actf(self.batch_norm5(self.conv6(x)))
         x = swish_actf(self.batch_norm6(self.conv7(x)))
         x = swish_actf(self.batch_norm7(self.conv8(x)))
-        x = self.pool1(x)
-        x = self.conv10(swish_actf(self.conv9(x)))
-        x = x.view(batch_size)
-        return F.sigmoid(x)
+        x = self.conv9(x)
+        x = self.pool1(x, x.size()[2:])
+        x = torch.sigmoid(x)
+        x = x.view(x.size()[0], -1)
+        return x
 
 
 def load_model(gen_lr, dis_lr, resid_block_num, num_channel, kernel_size, sample_fac, batch_s):
