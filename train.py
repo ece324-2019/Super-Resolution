@@ -66,19 +66,13 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
             real_img = Variable(label)
             if torch.cuda.is_available():
                 real_img = real_img.cuda()
-            #print(real_img.shape)
             real_img = torch.transpose(real_img, 1, 3)
-            #print(real_img)
-            #print(type(real_img))
             output_fake_img = D(real_img.float())
-            #print(output_fake_img.shape)
             output_fake_img = output_fake_img.view(-1)
             correct_D += int(sum(output_fake_img > 0.5))
-            #print(real_img.size())
             ones1 = Variable(torch.ones(output_fake_img.size()[0]))
             if torch.cuda.is_available():
                 ones1 = ones1.cuda()
-            #print(output_fake_img.shape, ones1.shape)
             D_loss_real_img = D_loss_func(output_fake_img, ones1)
 
             noise1 = Variable(data1)
@@ -90,7 +84,9 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
 
             fake_input = torch.transpose(fake_input,2,3)
             output_D = D(fake_input)
+
             print(fake_input.shape, real_img.shape, output_D.shape)
+            
             output_D = output_D.view(-1)
 
             print(fake_input.shape, output_D.shape)
