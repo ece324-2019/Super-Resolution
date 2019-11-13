@@ -120,28 +120,29 @@ class upsample_block(nn.Module):
 
 
 class Discriminator1(nn.Module):
-    def __init__(self):
+    def __init__(self, batch_size):
         super(Discriminator1, self).__init__()
         self.name = "Discriminator"
-        self.conv1 = nn.Conv2d(in_channels=3, out_channels=64, kernel_size=3, stride=1, padding=1)
-        self.conv2 = nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, stride=2, padding=1),
-        self.batch_norm1 = nn.BatchNorm2d(64)
-        self.conv3 = nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, stride=1, padding=1)
-        self.batch_norm2 = nn.BatchNorm2d(128)
-        self.conv4 = nn.Conv2d(in_channels=128, out_channels=128, kernel_size=3, stride=2, padding=1)
-        self.batch_norm3 = nn.BatchNorm2d(128)
-        self.conv5 = nn.Conv2d(in_channels=128, out_channels=256, kernel_size=3, padding=1)
-        self.batch_norm4 = nn.BatchNorm2d(256)
-        self.conv6 = nn.Conv2d(in_channels=256, out_channels=256, kernel_size=3, stride=2, padding=1)
-        self.batch_norm5 = nn.BatchNorm2d(256)
-        self.conv7 = nn.Conv2d(in_channels=256, out_channels=512, kernel_size=3, padding=1)
-        self.batch_norm6 = nn.BatchNorm2d(512)
-        self.conv8 = nn.Conv2d(in_channels=512, out_channels=512, kernel_size=3, stride=2, padding=1)
-        self.batch_norm7 = nn.BatchNorm2d(512)
+        self.batch_size = batch_size
+        self.conv1 = nn.Conv2d(in_channels=3, out_channels=self.batch_size, kernel_size=3, stride=1, padding=1)
+        self.conv2 = nn.Conv2d(in_channels=self.batch_size, out_channels=self.batch_size, kernel_size=3, stride=2, padding=1),
+        self.batch_norm1 = nn.BatchNorm2d(self.batch_size)
+        self.conv3 = nn.Conv2d(in_channels=self.batch_size, out_channels=self.batch_size*2, kernel_size=3, stride=1, padding=1)
+        self.batch_norm2 = nn.BatchNorm2d(self.batch_size*2)
+        self.conv4 = nn.Conv2d(in_channels=self.batch_size*2, out_channels=self.batch_size*2, kernel_size=3, stride=2, padding=1)
+        self.batch_norm3 = nn.BatchNorm2d(self.batch_size*2)
+        self.conv5 = nn.Conv2d(in_channels=self.batch_size*2, out_channels=self.batch_size*4, kernel_size=3, padding=1)
+        self.batch_norm4 = nn.BatchNorm2d(self.batch_size*4)
+        self.conv6 = nn.Conv2d(in_channels=self.batch_size*4, out_channels=self.batch_size*4, kernel_size=3, stride=2, padding=1)
+        self.batch_norm5 = nn.BatchNorm2d(self.batch_size*4)
+        self.conv7 = nn.Conv2d(in_channels=self.batch_size*4, out_channels=self.batch_size*8, kernel_size=3, padding=1)
+        self.batch_norm6 = nn.BatchNorm2d(self.batch_size*8)
+        self.conv8 = nn.Conv2d(in_channels=self.batch_size*8, out_channels=self.batch_size*8, kernel_size=3, stride=2, padding=1)
+        self.batch_norm7 = nn.BatchNorm2d(self.batch_size*8)
         self.pool1 = nn.AdaptiveAvgPool2d(1)
-        self.conv9 = nn.Conv2d(in_channels=512, out_channels=1024,
+        self.conv9 = nn.Conv2d(in_channels=self.batch_size*8, out_channels=self.batch_size*16,
                                kernel_size=1)  ######## maybe not need this many layers --> if so, change the in_channels of the next line and remove this line
-        self.conv10 = nn.Conv2d(in_channels=1024, out_channels=1, kernel_size=1)
+        self.conv10 = nn.Conv2d(in_channels=self.batch_size*16, out_channels=1, kernel_size=1)
 
     def forward(self, x):
         batch_size = x.size(0)
@@ -159,10 +160,10 @@ class Discriminator1(nn.Module):
         return F.sigmoid(x)
 
 
-def load_model(gen_lr, dis_lr, resid_block_num, num_channel, kernel_size, sample_fac):
+def load_model(gen_lr, dis_lr, resid_block_num, num_channel, kernel_size, sample_fac, batch_s):
     gen1 = Generator1(num_blocks=resid_block_num, upsample_factor=sample_fac, out_channel_num=num_channel,
                       kernel_size=kernel_size, stride_num=1)
-    dis1 = Discriminator1()
+    dis1 = Discriminator1(batch_s)
     gen_loss1 = nn.BCELoss()
     dis_loss1 = nn.BCELoss()
     gen_optim1 = optim.Adam(gen1.parameters(), lr=gen_lr, betas=(0.5, 0.999))  # betas can be changed
