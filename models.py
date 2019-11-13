@@ -140,17 +140,13 @@ class Discriminator1(nn.Module):
         self.conv8 = nn.Conv2d(in_channels=self.batch_size*8, out_channels=self.batch_size*8, kernel_size=3, stride=2, padding=1)
         self.batch_norm7 = nn.BatchNorm2d(self.batch_size*8)
         #self.pool1 = nn.AdaptiveAvgPool2d(1)
-        self.conv9 = nn.Conv2d(in_channels=self.batch_size*8, out_channels=self.batch_size*16,
+        self.conv9 = nn.Conv2d(in_channels=self.batch_size*8, out_channels=1,
                                kernel_size=1)  ######## maybe not need this many layers --> if so, change the in_channels of the next line and remove this line
-        self.conv10 = nn.Conv2d(in_channels=self.batch_size*16, out_channels=1, kernel_size=1)
+        #self.conv10 = nn.Conv2d(in_channels=self.batch_size*16, out_channels=1, kernel_size=1)
 
     def forward(self, x):
-        #batch_size = x.size(0)
-        #print(type(x))
         x = self.conv1(x)
-        #print(type(x))
         x = swish_actf(x)
-        #print(type(x))
         x = self.conv2(x)
         x = swish_actf(self.batch_norm1(x))
         x = swish_actf(self.batch_norm2(self.conv3(x)))
@@ -160,12 +156,8 @@ class Discriminator1(nn.Module):
         x = swish_actf(self.batch_norm6(self.conv7(x)))
         x = swish_actf(self.batch_norm7(self.conv8(x)))
         x = self.conv9(x)
-        #print("testing")
-        #print(x.shape)
         x = F.avg_pool2d(x, x.size()[2:])
-        #print(x.shape)
         x = torch.sigmoid(x)
-        #print(x.shape)
         x = x.view(x.size()[0], -1)
         print('x shape', x.shape)
         return x
