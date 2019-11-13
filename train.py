@@ -100,7 +100,8 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
             print('yeah')
             # Training the Generator
             G.zero_grad()
-
+            print(fake_input.shape, real_img.shape)
+            print(noise1.shape)
             G_content_loss = content_loss_func(fake_input, real_img.float())
 
             output_D = D(fake_input.detach()).view(-1)
@@ -239,7 +240,7 @@ if __name__ == "__main__":
     HR_train = np.array(HR_train)[0:int(len(HR_train)/100)]
     print('resize done')
 
-    batch_size1 = 4
+    batch_size1 = 2
     train_loader, val_loader, test_loader = load_data(HR_train, HR_valid, HR_test, LR_train, LR_valid, LR_test, batch_size1)
 
     training_GAN(batch_size=batch_size1, gen_lr=0.1, dis_lr=0.1, epochs=1, resid_block_num=16, num_channel=64, kernel_size=3,
