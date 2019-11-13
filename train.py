@@ -66,6 +66,8 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
             real_img = Variable(label).unsqueeze(1)
             if torch.cuda.is_available():
                 real_img = real_img.cuda()
+            real_img.transpose(1, 4).squeeze()
+            print(real_img.shape)
             output_fake_img = D(real_img.float())
             output_fake_img = output_fake_img.view(-1)
             correct_D += int(sum(output_fake_img > 0.5))
