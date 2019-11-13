@@ -167,7 +167,7 @@ class Discriminator1(nn.Module):
         x = torch.sigmoid(x)
         #print(x.shape)
         x = x.view(x.size()[0], -1)
-        print(x.shape)
+        print('x shape', x.shape)
         return x
 
 

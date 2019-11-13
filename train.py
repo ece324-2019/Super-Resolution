@@ -90,7 +90,7 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
 
             fake_input = torch.transpose(fake_input,2,3)
             output_D = D(fake_input)
-            print(fake_input.shape, real_img.shape, output_D.shape)
+            print(fake_input.detach().shape, real_img.shape, output_D.shape)
             output_D = output_D.view(-1)
 
             print(fake_input.shape, output_D.shape)
