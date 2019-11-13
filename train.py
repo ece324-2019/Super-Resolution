@@ -21,7 +21,7 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
                  dis_weights, cuda1, train_loader, val_loader, test_loader):
     torch.manual_seed(1000)
 
-    sample_fac = 2
+    sample_fac = 4
 
     G, D, G_loss_func, D_loss_func, G_optim, D_optim = load_model(gen_lr, dis_lr, resid_block_num, num_channel,
                                                                   kernel_size, sample_fac, batch_size)
@@ -74,19 +74,18 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
             if torch.cuda.is_available():
                 ones1 = ones1.cuda()
             D_loss_real_img = D_loss_func(output_fake_img, ones1)
-
+            print('hello')
             noise1 = Variable(data1)
             noise1 = noise1.unsqueeze(1)
             if torch.cuda.is_available():
                 noise1 = noise1.cuda()
             noise1 = torch.transpose(noise1, 1, 4).squeeze()
             fake_input = G(noise1.float())
-
+            print('world')
             fake_input = torch.transpose(fake_input,2,3)
             output_D = D(fake_input)
             output_D = output_D.view(-1)
-
-            print(fake_input.shape, output_D.shape)
+            print('!!!')
 
             corr_fake_D += int(sum(output_D < 0.5))
 
@@ -98,11 +97,10 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
             error_D = D_loss_real_img + D_loss_fake_img
             error_D.backward()
             D_optim.step()
-
+            print('yeah')
             # Training the Generator
             G.zero_grad()
 
-            print(real_img.shape, fake_input.shape, output_D.shape)
             G_content_loss = content_loss_func(fake_input, real_img.float())
 
             output_D = D(fake_input.detach()).view(-1)
@@ -110,12 +108,13 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
             ones1 = Variable(torch.ones(real_img.size()[0]))
             if torch.cuda.is_available():
                 ones1 = ones1.cuda()
-
+            print('almost')
             G_adv_loss = adv_loss_func(output_D, ones1.float())
             actual_G_loss = G_content_loss + 1e-3 * G_adv_loss  # We should probably change this equation
-
+            print('almost there')
             actual_G_loss.backward()
             G_optim.step()
+            print("here")
 
             valid_loss_G, train_loss_G, psnr_G, psnr_I = evaluate_valid(val_loader, actual_G_loss.item(), fake_input, content_loss_func, adv_loss_func, training_loss_G, G, D)
             print('[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f' %(epoch, 25, i, len(train_loader), error_D.data[0], actual_G_loss.data[0])) ############### --> idk
@@ -236,10 +235,12 @@ if __name__ == "__main__":
     for i in range(len(HR_test)):
         HR_test[i] = np.array(HR_test[i])[0:162 * 4, 0:139 * 4, :]
 
+    LR_train = np.array(LR_train)[0:int(len(LR_train)/100)]
+    HR_train = np.array(HR_train)[0:int(len(HR_train)/100)]
     print('resize done')
 
-    batch_size1 = 16
+    batch_size1 = 4
     train_loader, val_loader, test_loader = load_data(HR_train, HR_valid, HR_test, LR_train, LR_valid, LR_test, batch_size1)
 
-    training_GAN(batch_size=16, gen_lr=0.1, dis_lr=0.1, epochs=1, resid_block_num=16, num_channel=64, kernel_size=3,
+    training_GAN(batch_size=batch_size1, gen_lr=0.1, dis_lr=0.1, epochs=1, resid_block_num=16, num_channel=64, kernel_size=3,
                  gen_weights="", dis_weights="", cuda1=False, train_loader=train_loader, val_loader=val_loader, test_loader=test_loader)
