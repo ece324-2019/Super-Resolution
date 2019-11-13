@@ -53,7 +53,7 @@ class Generator1(nn.Module):
                                padding=int(self.kernel_size / 2))  # for upscaling the image before feeding it into residual blocks
 
         for i in range(self.num_blocks):
-            self.add_module('residual_block' + str(i + 1), residual_block())
+            self.add_module('residual_block' + str(i + 1), residual_block(self.out_channel_num, self.kernel_size, self.stride_num))
 
         self.conv2 = nn.Conv2d(in_channels=out_channel_num, out_channels=self.out_channel_num,
                                kernel_size=self.kernel_size, stride=self.stride_num, padding=int(self.kernel_size / 2))
@@ -89,7 +89,7 @@ class Generator1(nn.Module):
 
 # The following will be called multiple times in the Generator
 class residual_block(nn.Module):
-    def __init__(self, num_channel=64, kernels=3, strides=1):
+    def __init__(self, num_channel, kernels, strides):
         super(residual_block, self).__init__()
         self.name = "residual_block"
         self.conv1 = nn.Conv2d(in_channels=num_channel, out_channels=num_channel, kernel_size=kernels, stride=strides,
@@ -141,7 +141,7 @@ class Discriminator1(nn.Module):
         self.batch_norm7 = nn.BatchNorm2d(self.batch_size*8)
         #self.pool1 = nn.AdaptiveAvgPool2d(1)
         self.conv9 = nn.Conv2d(in_channels=self.batch_size*8, out_channels=1,
-                               kernel_size=1)  ######## maybe not need this many layers --> if so, change the in_channels of the next line and remove this line
+                               kernel_size=1)
         #self.conv10 = nn.Conv2d(in_channels=self.batch_size*16, out_channels=1, kernel_size=1)
 
     def forward(self, x):
