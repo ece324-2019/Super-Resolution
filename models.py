@@ -32,7 +32,7 @@ class ImageDataset(data.Dataset):
 
 # Activation function used for both networks (from paper: https://arxiv.org/pdf/1710.05941.pdf)
 def swish_actf(x):
-    return x * F.sigmoid(x)
+    return x * torch.sigmoid(x)
 
 
 # Model (Generator)
@@ -50,13 +50,13 @@ class Generator1(nn.Module):
 
         self.conv1 = nn.Conv2d(in_channels=3, out_channels=self.out_channel_num, kernel_size=self.kernel_size,
                                stride=self.stride_num,
-                               padding=self.kernel_size / 2)  # for upscaling the image before feeding it into residual blocks
+                               padding=int(self.kernel_size / 2))  # for upscaling the image before feeding it into residual blocks
 
         for i in range(self.num_blocks):
             self.add_module('residual_block' + str(i + 1), residual_block())
 
         self.conv2 = nn.Conv2d(in_channels=out_channel_num, out_channels=self.out_channel_num,
-                               kernel_size=self.kernel_size, stride=self.stride_num, padding=self.kernel_size / 2)
+                               kernel_size=self.kernel_size, stride=self.stride_num, padding=int(self.kernel_size / 2))
         self.bn2 = nn.BatchNorm2d(out_channel_num)
 
         for j in range(int(self.upsample_factor / 2)):
@@ -69,8 +69,8 @@ class Generator1(nn.Module):
 
     def forward(self, x):
         x = swish_actf(self.conv1(x))
-        x1 = x.copy()
-        for i in range(self.n_residual_blocks):
+        x1 = x.clone()
+        for i in range(self.num_blocks):
             x = self.__getattr__('residual_block' + str(i + 1))(x)
 
         x = x1 + self.bn2(self.conv2(x))
@@ -81,7 +81,7 @@ class Generator1(nn.Module):
         return self.conv3(x)
 
 
-# Notes:
+# Notes
 # Batch normalization is used to decrease variance when training deeper network
 # Residual blocks are the recursive CNN blocks that helpful when training deep network
 # Upscaling before feeding into the residual CNN blocks is helpful in making the model learn the filters first (from paper: Photo-Realistic Single Image Super-Resolution Using a Generative Adversarial Network: https://arxiv.org/pdf/1609.04802.pdf)
@@ -93,10 +93,10 @@ class residual_block(nn.Module):
         super(residual_block, self).__init__()
         self.name = "residual_block"
         self.conv1 = nn.Conv2d(in_channels=num_channel, out_channels=num_channel, kernel_size=kernels, stride=strides,
-                               padding=kernels / 2)
+                               padding=int(kernels / 2))
         self.batch_norm1 = nn.BatchNorm2d(num_channel)
         self.conv2 = nn.Conv2d(in_channels=num_channel, out_channels=num_channel, kernel_size=kernels, stride=strides,
-                               padding=kernels / 2)
+                               padding=int(kernels / 2))
         self.batch_norm2 = nn.BatchNorm2d(num_channel)
 
     def forward(self, x):
@@ -110,7 +110,7 @@ class upsample_block(nn.Module):
         super(upsample_block, self).__init__()
         self.name = "upsample_block"
         self.conv1 = nn.Conv2d(in_channels=in_channel, out_channels=in_channel * up_scale_factor ** 2,
-                               kernel_size=kernels, stride=strides, padding=kernels / 2)
+                               kernel_size=kernels, stride=strides, padding=int(kernels / 2))
         self.shuffler = nn.PixelShuffle(up_scale_factor)
 
     def forward(self, x):
@@ -125,7 +125,7 @@ class Discriminator1(nn.Module):
         self.name = "Discriminator"
         self.batch_size = batch_size
         self.conv1 = nn.Conv2d(in_channels=3, out_channels=self.batch_size, kernel_size=3, stride=1, padding=1)
-        self.conv2 = nn.Conv2d(in_channels=self.batch_size, out_channels=self.batch_size, kernel_size=3, stride=2, padding=1),
+        self.conv2 = nn.Conv2d(in_channels=self.batch_size, out_channels=self.batch_size, kernel_size=3, stride=2, padding=1)
         self.batch_norm1 = nn.BatchNorm2d(self.batch_size)
         self.conv3 = nn.Conv2d(in_channels=self.batch_size, out_channels=self.batch_size*2, kernel_size=3, stride=1, padding=1)
         self.batch_norm2 = nn.BatchNorm2d(self.batch_size*2)
@@ -139,15 +139,20 @@ class Discriminator1(nn.Module):
         self.batch_norm6 = nn.BatchNorm2d(self.batch_size*8)
         self.conv8 = nn.Conv2d(in_channels=self.batch_size*8, out_channels=self.batch_size*8, kernel_size=3, stride=2, padding=1)
         self.batch_norm7 = nn.BatchNorm2d(self.batch_size*8)
-        self.pool1 = nn.AdaptiveAvgPool2d(1)
+        #self.pool1 = nn.AdaptiveAvgPool2d(1)
         self.conv9 = nn.Conv2d(in_channels=self.batch_size*8, out_channels=self.batch_size*16,
                                kernel_size=1)  ######## maybe not need this many layers --> if so, change the in_channels of the next line and remove this line
         self.conv10 = nn.Conv2d(in_channels=self.batch_size*16, out_channels=1, kernel_size=1)
 
     def forward(self, x):
-        batch_size = x.size(0)
-        x = swish_actf(self.conv1(x))
-        x = swish_actf(self.batch_norm1(self.conv2(x)))
+        #batch_size = x.size(0)
+        #print(type(x))
+        x = self.conv1(x)
+        #print(type(x))
+        x = swish_actf(x)
+        #print(type(x))
+        x = self.conv2(x)
+        x = swish_actf(self.batch_norm1(x))
         x = swish_actf(self.batch_norm2(self.conv3(x)))
         x = swish_actf(self.batch_norm3(self.conv4(x)))
         x = swish_actf(self.batch_norm4(self.conv5(x)))
@@ -155,9 +160,14 @@ class Discriminator1(nn.Module):
         x = swish_actf(self.batch_norm6(self.conv7(x)))
         x = swish_actf(self.batch_norm7(self.conv8(x)))
         x = self.conv9(x)
-        x = self.pool1(x, x.size()[2:])
+        #print("testing")
+        #print(x.shape)
+        x = F.avg_pool2d(x, x.size()[2:])
+        #print(x.shape)
         x = torch.sigmoid(x)
+        #print(x.shape)
         x = x.view(x.size()[0], -1)
+        print(x.shape)
         return x
 
 

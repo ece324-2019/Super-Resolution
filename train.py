@@ -63,32 +63,44 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
 
             # Training the Discriminator
             D.zero_grad()
-            real_img = Variable(label).unsqueeze(1)
+            real_img = Variable(label)
             if torch.cuda.is_available():
                 real_img = real_img.cuda()
-            real_img.transpose(1, 4).squeeze()
-            print(real_img.shape)
+            #print(real_img.shape)
+            real_img = torch.transpose(real_img, 1, 3)
+            #print(real_img)
+            #print(type(real_img))
             output_fake_img = D(real_img.float())
+            #print(output_fake_img.shape)
             output_fake_img = output_fake_img.view(-1)
             correct_D += int(sum(output_fake_img > 0.5))
-
-            ones1 = Variable(torch.ones(real_img.size()[0]))
+            #print(real_img.size())
+            ones1 = Variable(torch.ones(output_fake_img.size()[0]))
             if torch.cuda.is_available():
                 ones1 = ones1.cuda()
+            #print(output_fake_img.shape, ones1.shape)
             D_loss_real_img = D_loss_func(output_fake_img, ones1)
 
             noise1 = Variable(data1)
             noise1 = noise1.unsqueeze(1)
             if torch.cuda.is_available():
                 noise1 = noise1.cuda()
+            noise1 = torch.transpose(noise1, 1, 4).squeeze()
             fake_input = G(noise1.float())
+
+            fake_input = torch.transpose(fake_input,2,3)
+            output_D = D(fake_input)
+            print(fake_input.shape, real_img.shape, output_D.shape)
+            output_D = output_D.view(-1)
+
+            print(fake_input.shape, output_D.shape)
+
+            corr_fake_D += int(sum(output_D < 0.5))
 
             zeros1 = Variable(torch.zeros(real_img.size()[0]))
             if torch.cuda.is_available():
                 zeros1 = zeros1.cuda()
 
-            output_D = D(fake_input.detach()).view(-1)
-            corr_fake_D += int(sum(output_D < 0.5))
             D_loss_fake_img = D_loss_func(output_D, zeros1)
             error_D = D_loss_real_img + D_loss_fake_img
             error_D.backward()
@@ -96,6 +108,8 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
 
             # Training the Generator
             G.zero_grad()
+
+            print(real_img.shape, fake_input.shape, output_D.shape)
             G_content_loss = content_loss_func(fake_input, real_img.float())
 
             output_D = D(fake_input.detach()).view(-1)
