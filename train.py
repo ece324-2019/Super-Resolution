@@ -215,12 +215,14 @@ def evaluate(low_img, noise_output, real_img):
 
 if __name__ == "__main__":
     # load iterator
+    print("loading datasets")
     HR_train = np.load('HR_train.npy')
     HR_valid = np.load('HR_valid.npy')
     HR_test = np.load('HR_test.npy')
     LR_train = np.load('LR_train.npy', allow_pickle=True)
     LR_valid = np.load('LR_valid.npy', allow_pickle=True)
     LR_test = np.load('LR_test.npy', allow_pickle=True)
+    print("Done loading datasets")
 
     # resize data
     for i in range(len(LR_train)):
@@ -236,9 +238,11 @@ if __name__ == "__main__":
     for i in range(len(HR_test)):
         HR_test[i] = np.array(HR_test[i])[0:162 * 4, 0:139 * 4, :]
 
-    LR_train = np.array(LR_train)[0:int(len(LR_train)/100)]
-    HR_train = np.array(HR_train)[0:int(len(HR_train)/100)]
-    print('resize done')
+    print("Doing datasets")
+
+    LR_train = np.array(LR_train)[0:int(len(LR_train)/1000)]
+    HR_train = np.array(HR_train)[0:int(len(HR_train)/1000)]
+    print('Resize done')
 
     batch_size1 = 2
     train_loader, val_loader, test_loader = load_data(HR_train, HR_valid, HR_test, LR_train, LR_valid, LR_test, batch_size1)
