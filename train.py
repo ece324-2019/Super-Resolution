@@ -134,7 +134,7 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
             print("here")
 
             valid_loss_G, train_loss_G, psnr_G, psnr_I = evaluate_valid(val_loader, actual_G_loss.item(), fake_input, content_loss_func, adv_loss_func, train_loss_G, G, D)
-            print('[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f' %(epoch, 25, i, len(train_loader), error_D.data[0], actual_G_loss.data[0])) ############### --> idk
+            #print('[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f' %(epoch.item(), 25, i, len(train_loader), error_D.data[0].item(), actual_G_loss.data[0].item())) ############### --> idk
 
         print("Epoch Ended")
         torch.save(D.state_dict(), "Model Checkpoints/{}.pt".format(D.name))
@@ -143,9 +143,9 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
         print("Real Image Accuracy (Discriminator)", correct_D / len(train_loader.dataset))
         print("Combined Accuracy (Discriminator)", ((corr_fake_D + correct_D) / (2 * len(train_loader.dataset))))
         corr_fake_D, correct_D = 0, 0
-        utils.save_image(real_img[0], '/content/gdrive/My Drive/ECE324 Project/Model Checkpoints/real_images_Epoch_%03d.png' % (epoch), normalize=True)
+        utils.save_image(real_img[0], 'Model Checkpoints/real_images_Epoch_%03d.png' % (epoch), normalize=True)
         fake11 = G(noise1.float())
-        utils.save_image(fake11[0], '/content/gdrive/My Drive/ECE324 Project/Model Checkpoints/fake_images_Epoch_%03d.png' % (epoch), normalize=True)
+        utils.save_image(fake11[0], 'Model Checkpoints/fake_images_Epoch_%03d.png' % (epoch), normalize=True)
 
     train_loss_G = np.array(train_loss_G)
     valid_loss_G = np.array(valid_loss_G)
@@ -228,8 +228,17 @@ def evaluate(low_img, noise_output, real_img):
     psnr_I_np = np.zeros(batch_size)
     psnr_G_np = np.zeros(batch_size)
 
+    print('shape', low_img.shape)
     for i in range(batch_size):
-        interpolated_img[i] = resize(low_img[i], (556, 648))
+        print(low_img[i].shape, real_img[i].shape)
+        #low_img = torch.transpose(torch.tensor(low_img[i]), 0, 2)
+        #real_img = torch.transpose(torch.tensor(real_img[i]), 0, 2)
+        #print(low_img[i].shape, real_img[i].shape)
+        #interpolated_img[i] = resize(low_img[i], (556, 648))
+
+        interpolated_img[i] = np.repeat(np.repeat(low_img[i], 4, axis=1), 4, axis=2)
+
+        print(real_img[i].shape, interpolated_img[i].shape)
         psnr_I_np[i] = compare_psnr(real_img[i], interpolated_img[i])
         psnr_G_np[i] = compare_psnr(real_img[i], noise_output[i])
     total_psnr_I = np.sum(psnr_I_np)
@@ -266,8 +275,8 @@ if __name__ == "__main__":
 
     print("Doing datasets")
 
-    LR_train = np.array(LR_train)[0:int(len(LR_train)/1000)]
-    HR_train = np.array(HR_train)[0:int(len(HR_train)/1000)]
+    LR_train = np.array(LR_train)[0:int(len(LR_train)/600)]
+    HR_train = np.array(HR_train)[0:int(len(HR_train)/600)]
     print('Resize done')
 
     batch_size1 = 2
