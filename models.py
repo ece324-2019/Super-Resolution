@@ -109,7 +109,7 @@ class upsample_block(nn.Module):
     def __init__(self, in_channel=64, kernels=3, strides=1, up_scale_factor=2):
         super(upsample_block, self).__init__()
         self.name = "upsample_block"
-        self.conv1 = nn.Conv2d(in_channels=in_channel, out_channels=in_channel * up_scale_factor ** 2,
+        self.conv1 = nn.Conv2d(in_channels=in_channel, out_channels=in_channel * up_scale_factor,
                                kernel_size=kernels, stride=strides, padding=int(kernels / 2))
         self.shuffler = nn.PixelShuffle(up_scale_factor)
 

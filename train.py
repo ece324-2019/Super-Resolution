@@ -79,7 +79,10 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
             noise1 = noise1.unsqueeze(1)
             if torch.cuda.is_available():
                 noise1 = noise1.cuda()
+            print(noise1.shape)
             noise1 = torch.transpose(noise1, 1, 4).squeeze()
+            noise1 = torch.transpose(noise1, 2, 3)
+            print(noise1.shape)
             fake_input = G(noise1.float())
             print('world')
             fake_input = torch.transpose(fake_input,2,3)
