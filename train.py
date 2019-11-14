@@ -81,31 +81,40 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
                 noise1 = noise1.cuda()
             print(noise1.shape)
             noise1 = torch.transpose(noise1, 1, 4).squeeze()
-            noise1 = torch.transpose(noise1, 2, 3)
+            #noise1 = torch.transpose(noise1, 2, 3)
             print(noise1.shape)
+            ''''''''''''''''''''''''
             fake_input = G(noise1.float())
             print('world')
             fake_input = torch.transpose(fake_input,2,3)
+
+            #print('generated: ', fake_input.shape)
+
             output_D = D(fake_input)
+
+            #print(fake_input.shape)
+
             output_D = output_D.view(-1)
             print('!!!')
 
             corr_fake_D += int(sum(output_D < 0.5))
+
+            #print(fake_input.shape)
 
             zeros1 = Variable(torch.zeros(real_img.size()[0]))
             if torch.cuda.is_available():
                 zeros1 = zeros1.cuda()
 
             D_loss_fake_img = D_loss_func(output_D, zeros1)
+            #print(fake_input.shape)
             error_D = D_loss_real_img + D_loss_fake_img
-            error_D.backward()
+            error_D.backward(retain_graph=True)
             D_optim.step()
             print('yeah')
             # Training the Generator
             G.zero_grad()
             print(fake_input.shape, real_img.shape)
             print(noise1.shape)
-            G_content_loss = content_loss_func(fake_input, real_img.float())
 
             output_D = D(fake_input.detach()).view(-1)
 
@@ -113,14 +122,18 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
             if torch.cuda.is_available():
                 ones1 = ones1.cuda()
             print('almost')
+
+            G_content_loss = content_loss_func(fake_input, real_img.float())
             G_adv_loss = adv_loss_func(output_D, ones1.float())
             actual_G_loss = G_content_loss + 1e-3 * G_adv_loss  # We should probably change this equation
+
             print('almost there')
+            print(G_content_loss, G_adv_loss, G_content_loss.shape, G_adv_loss.shape)
             actual_G_loss.backward()
             G_optim.step()
             print("here")
 
-            valid_loss_G, train_loss_G, psnr_G, psnr_I = evaluate_valid(val_loader, actual_G_loss.item(), fake_input, content_loss_func, adv_loss_func, training_loss_G, G, D)
+            valid_loss_G, train_loss_G, psnr_G, psnr_I = evaluate_valid(val_loader, actual_G_loss.item(), fake_input, content_loss_func, adv_loss_func, train_loss_G, G, D)
             print('[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f' %(epoch, 25, i, len(train_loader), error_D.data[0], actual_G_loss.data[0])) ############### --> idk
 
         print("Epoch Ended")
@@ -159,9 +172,19 @@ def evaluate_valid(valid_loader, actual_G_loss1, fake_input1, content_loss_func,
   for i, batch in enumerate(valid_loader):
     if i > 0 :
       break
-    low_img, real_img = batch
 
-    noise1 = Variable(low_img).unsqueeze(1)
+    low_img, real_img = batch
+    print(low_img.shape, real_img.shape)
+
+    low_img = torch.transpose(low_img, 1, 3)
+    real_img = torch.transpose(real_img, 1, 3)
+
+    noise1 = Variable(low_img)
+    print(noise1.shape)
+    #noise1 = torch.transpose(noise1, 1, 4).squeeze()
+    #print(noise1.shape)
+    #noise1 = torch.transpose(noise1, 1, 3)
+    #print(noise1.shape)
     if torch.cuda.is_available():
       noise1 = noise1.cuda()
     noise_output = G(noise1.float())
@@ -206,7 +229,7 @@ def evaluate(low_img, noise_output, real_img):
     psnr_G_np = np.zeros(batch_size)
 
     for i in range(batch_size):
-        interpolated_img[i] = resize(low_img[i], (112, 92))
+        interpolated_img[i] = resize(low_img[i], (556, 648))
         psnr_I_np[i] = compare_psnr(real_img[i], interpolated_img[i])
         psnr_G_np[i] = compare_psnr(real_img[i], noise_output[i])
     total_psnr_I = np.sum(psnr_I_np)

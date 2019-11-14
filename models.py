@@ -59,25 +59,26 @@ class Generator1(nn.Module):
                                kernel_size=self.kernel_size, stride=self.stride_num, padding=int(self.kernel_size / 2))
         self.bn2 = nn.BatchNorm2d(out_channel_num)
 
-        for j in range(int(self.upsample_factor / 2)):
+        for j in range(int(self.upsample_factor / 4)):
+            out_chan = self.out_channel_num*(self.upsample_factor**2)
             self.add_module('upsample_block' + str(j + 1),
-                            upsample_block(in_channel=self.out_channel_num, kernels=3, strides=1,
+                            upsample_block(in_channel=self.out_channel_num, out_channel=out_chan, kernels=3, strides=1,
                                            up_scale_factor=upsample_factor))
 
         self.conv3 = nn.Conv2d(in_channels=self.out_channel_num, out_channels=3, kernel_size=9, stride=self.stride_num,
-                               padding=4)  ######################################### kernel size and padding???
+                               padding=4)
 
     def forward(self, x):
         x = swish_actf(self.conv1(x))
         x1 = x.clone()
         for i in range(self.num_blocks):
             x = self.__getattr__('residual_block' + str(i + 1))(x)
-
+        print('x', x.shape)
         x = x1 + self.bn2(self.conv2(x))
-
-        for i in range(int(self.upsample_factor / 2)):
+        print('x', x.shape)
+        for i in range(int(self.upsample_factor / 4)):
             x = self.__getattr__('upsample_block' + str(i + 1))(x)
-
+        print('x', x.shape)
         return self.conv3(x)
 
 
@@ -106,10 +107,12 @@ class residual_block(nn.Module):
 
 # Upsampling the image at the end of the Generator
 class upsample_block(nn.Module):
-    def __init__(self, in_channel=64, kernels=3, strides=1, up_scale_factor=2):
+    def __init__(self, in_channel, out_channel, kernels, strides, up_scale_factor):
         super(upsample_block, self).__init__()
         self.name = "upsample_block"
-        self.conv1 = nn.Conv2d(in_channels=in_channel, out_channels=in_channel * up_scale_factor,
+        #self.conv1 = nn.Conv2d(in_channels=in_channel, out_channels=in_channel * up_scale_factor ** 2,
+        #                       kernel_size=kernels, stride=strides, padding=int(kernels / 2))
+        self.conv1 = nn.Conv2d(in_channels=in_channel, out_channels=out_channel,
                                kernel_size=kernels, stride=strides, padding=int(kernels / 2))
         self.shuffler = nn.PixelShuffle(up_scale_factor)
 
