@@ -343,5 +343,5 @@ if __name__ == "__main__":
     batch_size1 = 2
     train_loader, val_loader, test_loader = load_data(HR_train, HR_valid, HR_test, LR_train, LR_valid, LR_test, batch_size1)
 
-    training_GAN(batch_size=batch_size1, gen_lr=0.1, dis_lr=0.1, epochs=1000, resid_block_num=16, num_channel=batch_size1, kernel_size=3,
+    training_GAN(batch_size=batch_size1, gen_lr=0.001, dis_lr=0.1, epochs=1000, resid_block_num=16, num_channel=batch_size1, kernel_size=3,
                  gen_weights="", dis_weights="", cuda1=False, train_loader=train_loader, val_loader=val_loader, test_loader=test_loader)
