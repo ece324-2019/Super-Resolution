@@ -114,6 +114,7 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
             error_D.backward(retain_graph=True)
             D_optim.step()
             #print('yeah')
+            
             # Training the Generator
             G.zero_grad()
             #print(fake_input.shape, real_img.shape)
