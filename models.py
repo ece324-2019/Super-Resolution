@@ -73,12 +73,12 @@ class Generator1(nn.Module):
         x1 = x.clone()
         for i in range(self.num_blocks):
             x = self.__getattr__('residual_block' + str(i + 1))(x)
-        print('x', x.shape)
+        #print('x', x.shape)
         x = x1 + self.bn2(self.conv2(x))
-        print('x', x.shape)
+        #print('x', x.shape)
         for i in range(int(self.upsample_factor / 4)):
             x = self.__getattr__('upsample_block' + str(i + 1))(x)
-        print('x', x.shape)
+        #print('x', x.shape)
         return self.conv3(x)
 
 
@@ -162,7 +162,7 @@ class Discriminator1(nn.Module):
         x = F.avg_pool2d(x, x.size()[2:])
         x = torch.sigmoid(x)
         x = x.view(x.size()[0], -1)
-        print('x shape', x.shape)
+        #print('x shape', x.shape)
         return x
 
 
@@ -172,8 +172,8 @@ def load_model(gen_lr, dis_lr, resid_block_num, num_channel, kernel_size, sample
     dis1 = Discriminator1(batch_s)
     gen_loss1 = nn.BCELoss()
     dis_loss1 = nn.BCELoss()
-    gen_optim1 = optim.Adam(gen1.parameters(), lr=gen_lr, betas=(0.5, 0.999))  # betas can be changed
-    dis_optim1 = optim.Adam(dis1.parameters(), lr=dis_lr, betas=(0.5, 0.999))  # betas can be changed
+    gen_optim1 = optim.Adam(gen1.parameters(), lr=gen_lr, betas=(0.9, 0.999))  # betas can be changed
+    dis_optim1 = optim.Adam(dis1.parameters(), lr=dis_lr, betas=(0.9, 0.999))  # betas can be changed
     return gen1, dis1, gen_loss1, dis_loss1, gen_optim1, dis_optim1
 
 

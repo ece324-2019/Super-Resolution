@@ -3,6 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="1c3c11c7-31c9-4237-90d8-b2195369d8b6" name="Default Changelist" comment="Save images into numpy files">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/Discriminator.pt" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/Discriminator.pt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/Generator.pt" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/Generator.pt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/train.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
