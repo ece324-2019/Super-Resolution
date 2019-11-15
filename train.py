@@ -131,8 +131,8 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
 
             '''###############################################################################################'''
 
-            print(G_content_loss, G_adv_loss)
-            actual_G_loss = 1e-6 * G_content_loss + 1e-2 * G_adv_loss  # We should probably change this equation
+            print('loss functions: ', G_content_loss, G_adv_loss)
+            actual_G_loss = G_content_loss + G_adv_loss  # We should probably change this equation
 
             '''###############################################################################################'''
 
@@ -161,9 +161,10 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
         '''save fake image here'''
         fake11 = G(noise1.float())
         temp = torch.transpose(fake11[0].detach(), 0, 2)
-        print(max(temp.flatten()), min(temp.flatten()))
+        temp = torch.transpose(temp.detach(), 1, 0)
+        print('before sig', max(temp.flatten()), min(temp.flatten()))
         temp = torch.sigmoid(temp).numpy()
-        print(max(temp.flatten()), min(temp.flatten()))
+        print('after sig', max(temp.flatten()), min(temp.flatten()))
         #print(type(temp), temp.shape, type(temp[0][0][0]), temp[0][0][0])
         #print(temp.shape)
         #temp = Image.fromarray(temp)
