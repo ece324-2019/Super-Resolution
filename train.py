@@ -162,9 +162,12 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
         fake11 = G(noise1.float())
         temp = torch.transpose(fake11[0].detach(), 0, 2)
         temp = torch.transpose(temp.detach(), 1, 0)
-        print('before sig', max(temp.flatten()), min(temp.flatten()))
-        temp = torch.sigmoid(temp).numpy()
-        print('after sig', max(temp.flatten()), min(temp.flatten()))
+        max_num = max(temp.flatten())
+        min_num = min(temp.flatten())
+        print('before sig', max_num, min_num)
+        temp = (temp - min_num)/(max_num-min_num)
+        #temp = torch.sigmoid(temp).numpy()
+        #print('after sig', max(temp.flatten()), min(temp.flatten()))
         #print(type(temp), temp.shape, type(temp[0][0][0]), temp[0][0][0])
         #print(temp.shape)
         #temp = Image.fromarray(temp)
@@ -343,5 +346,5 @@ if __name__ == "__main__":
     batch_size1 = 2
     train_loader, val_loader, test_loader = load_data(HR_train, HR_valid, HR_test, LR_train, LR_valid, LR_test, batch_size1)
 
-    training_GAN(batch_size=batch_size1, gen_lr=0.001, dis_lr=0.1, epochs=1000, resid_block_num=16, num_channel=batch_size1, kernel_size=3,
-                 gen_weights="", dis_weights="", cuda1=False, train_loader=train_loader, val_loader=val_loader, test_loader=test_loader)
+    training_GAN(batch_size=batch_size1, gen_lr=0.001, dis_lr=0.1, epochs=1000, resid_block_num=18, num_channel=20, kernel_size=3,
+                 gen_weights='', dis_weights='', cuda1=False, train_loader=train_loader, val_loader=val_loader, test_loader=test_loader)
