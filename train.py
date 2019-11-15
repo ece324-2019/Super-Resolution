@@ -9,6 +9,9 @@ from skimage.transform import resize
 from skimage.measure import compare_psnr
 from tqdm import tqdm
 from torch.autograd import Variable
+from PIL import Image
+import matplotlib
+import torchvision
 
 import torchvision.utils as utils # Used in Training loop
 from models import *
@@ -74,18 +77,18 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
             if torch.cuda.is_available():
                 ones1 = ones1.cuda()
             D_loss_real_img = D_loss_func(output_fake_img, ones1)
-            print('hello')
+            print(i)
             noise1 = Variable(data1)
             noise1 = noise1.unsqueeze(1)
             if torch.cuda.is_available():
                 noise1 = noise1.cuda()
-            print(noise1.shape)
+            #print(noise1.shape)
             noise1 = torch.transpose(noise1, 1, 4).squeeze()
             #noise1 = torch.transpose(noise1, 2, 3)
-            print(noise1.shape)
+            #print(noise1.shape)
             ''''''''''''''''''''''''
             fake_input = G(noise1.float())
-            print('world')
+            #print('world')
             fake_input = torch.transpose(fake_input,2,3)
 
             #print('generated: ', fake_input.shape)
@@ -95,7 +98,7 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
             #print(fake_input.shape)
 
             output_D = output_D.view(-1)
-            print('!!!')
+            #print('!!!')
 
             corr_fake_D += int(sum(output_D < 0.5))
 
@@ -110,42 +113,96 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
             error_D = D_loss_real_img + D_loss_fake_img
             error_D.backward(retain_graph=True)
             D_optim.step()
-            print('yeah')
+            #print('yeah')
             # Training the Generator
             G.zero_grad()
-            print(fake_input.shape, real_img.shape)
-            print(noise1.shape)
+            #print(fake_input.shape, real_img.shape)
+            #print(noise1.shape)
 
             output_D = D(fake_input.detach()).view(-1)
 
             ones1 = Variable(torch.ones(real_img.size()[0]))
             if torch.cuda.is_available():
                 ones1 = ones1.cuda()
-            print('almost')
+            #print('almost')
 
             G_content_loss = content_loss_func(fake_input, real_img.float())
             G_adv_loss = adv_loss_func(output_D, ones1.float())
-            actual_G_loss = G_content_loss + 1e-3 * G_adv_loss  # We should probably change this equation
 
-            print('almost there')
-            print(G_content_loss, G_adv_loss, G_content_loss.shape, G_adv_loss.shape)
+            '''###############################################################################################'''
+
+            print('loss functions: ', G_content_loss, G_adv_loss)
+            actual_G_loss = G_content_loss + G_adv_loss  # We should probably change this equation
+
+            '''###############################################################################################'''
+
+            #print('almost there')
+            #print(G_content_loss, G_adv_loss, G_content_loss.shape, G_adv_loss.shape)
             actual_G_loss.backward()
             G_optim.step()
-            print("here")
+            #print("here")
 
             valid_loss_G, train_loss_G, psnr_G, psnr_I = evaluate_valid(val_loader, actual_G_loss.item(), fake_input, content_loss_func, adv_loss_func, train_loss_G, G, D)
             #print('[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f' %(epoch.item(), 25, i, len(train_loader), error_D.data[0].item(), actual_G_loss.data[0].item())) ############### --> idk
 
-        print("Epoch Ended")
+        print("Epoch" + str(epoch) + "Ended")
         torch.save(D.state_dict(), "Model Checkpoints/{}.pt".format(D.name))
         torch.save(G.state_dict(), "Model Checkpoints/{}.pt".format(G.name))
         print("Fake image accuracy(Discriminator)", corr_fake_D / len(train_loader.dataset))
         print("Real Image Accuracy (Discriminator)", correct_D / len(train_loader.dataset))
         print("Combined Accuracy (Discriminator)", ((corr_fake_D + correct_D) / (2 * len(train_loader.dataset))))
         corr_fake_D, correct_D = 0, 0
-        utils.save_image(real_img[0], 'Model Checkpoints/real_images_Epoch_%03d.png' % (epoch), normalize=True)
+
+        '''save real image here'''
+        temp = torch.transpose(real_img[0], 0, 2).numpy()
+        temp = Image.fromarray(temp)
+        temp.save('Model Checkpoints/real_images_Epoch_%03d.png' % epoch)
+
+        '''save fake image here'''
         fake11 = G(noise1.float())
-        utils.save_image(fake11[0], 'Model Checkpoints/fake_images_Epoch_%03d.png' % (epoch), normalize=True)
+        temp = torch.transpose(fake11[0].detach(), 0, 2)
+        temp = torch.transpose(temp.detach(), 1, 0)
+        print('before sig', max(temp.flatten()), min(temp.flatten()))
+        temp = torch.sigmoid(temp).numpy()
+        print('after sig', max(temp.flatten()), min(temp.flatten()))
+        #print(type(temp), temp.shape, type(temp[0][0][0]), temp[0][0][0])
+        #print(temp.shape)
+        #temp = Image.fromarray(temp)
+        #temp.save('Model Checkpoints/fake_images_Epoch_%03d.png' % epoch)
+        plt.imshow(temp)
+        #plt.show()
+        plt.savefig('Model Checkpoints/fake_images_Epoch_%03d.png' % epoch)
+
+
+        '''
+        fake11 = G(noise1.float())
+        img = fake11[0]
+        #print(fake11[0].shape, type(fake11[0]))
+        #temp = torch.transpose(fake11[0],1,2)
+        #temp = torch.transpose(temp,0,2)
+        utils.save_image(img, 'Model Checkpoints/fake_images_Epoch_%03d.png' % epoch, normalize=True)
+
+        
+        #temp = torch.transpose(real_img[0], 0, 2).numpy()
+        #temp = Image.fromarray(temp.numpy())
+        #temp.save('Model Checkpoints/real_images_Epoch_%03d.png' % epoch)
+        #plt.imshow(temp)
+        #plt.savefig('Model Checkpoints/real_images_Epoch_%03d.png' % epoch)
+
+        fake11 = G(noise1.float())
+        temp = torch.transpose(fake11[0].detach(), 0, 2)
+        #print(type(temp), temp.shape)
+        # utils.save_image(temp, 'Model Checkpoints/fake_images_Epoch_%03d.png' % epoch, normalize=True)
+        
+        temp = temp.numpy()
+        #print(type(temp), temp.shape)
+        # temp = Image.fromarray(temp)
+        temp = np.clip(temp, 0.0, 1.0)
+        plt.imshow(temp)
+        plt.show()
+        plt.savefig('Model Checkpoints/fake_images_Epoch_%03d.png' % epoch)
+        # temp.save('Model Checkpoints/fake_images_Epoch_%03d.png' % epoch)
+        '''
 
     train_loss_G = np.array(train_loss_G)
     valid_loss_G = np.array(valid_loss_G)
@@ -174,13 +231,13 @@ def evaluate_valid(valid_loader, actual_G_loss1, fake_input1, content_loss_func,
       break
 
     low_img, real_img = batch
-    print(low_img.shape, real_img.shape)
+    #print(low_img.shape, real_img.shape)
 
     low_img = torch.transpose(low_img, 1, 3)
     real_img = torch.transpose(real_img, 1, 3)
 
     noise1 = Variable(low_img)
-    print(noise1.shape)
+    #print(noise1.shape)
     #noise1 = torch.transpose(noise1, 1, 4).squeeze()
     #print(noise1.shape)
     #noise1 = torch.transpose(noise1, 1, 3)
@@ -228,9 +285,9 @@ def evaluate(low_img, noise_output, real_img):
     psnr_I_np = np.zeros(batch_size)
     psnr_G_np = np.zeros(batch_size)
 
-    print('shape', low_img.shape)
+    #print('shape', low_img.shape)
     for i in range(batch_size):
-        print(low_img[i].shape, real_img[i].shape)
+        #print(low_img[i].shape, real_img[i].shape)
         #low_img = torch.transpose(torch.tensor(low_img[i]), 0, 2)
         #real_img = torch.transpose(torch.tensor(real_img[i]), 0, 2)
         #print(low_img[i].shape, real_img[i].shape)
@@ -238,7 +295,7 @@ def evaluate(low_img, noise_output, real_img):
 
         interpolated_img[i] = np.repeat(np.repeat(low_img[i], 4, axis=1), 4, axis=2)
 
-        print(real_img[i].shape, interpolated_img[i].shape)
+        #print(real_img[i].shape, interpolated_img[i].shape)
         psnr_I_np[i] = compare_psnr(real_img[i], interpolated_img[i])
         psnr_G_np[i] = compare_psnr(real_img[i], noise_output[i])
     total_psnr_I = np.sum(psnr_I_np)
@@ -250,14 +307,14 @@ def evaluate(low_img, noise_output, real_img):
 
 if __name__ == "__main__":
     # load iterator
-    print("loading datasets")
+    #print("loading datasets")
     HR_train = np.load('HR_train.npy')
     HR_valid = np.load('HR_valid.npy')
     HR_test = np.load('HR_test.npy')
     LR_train = np.load('LR_train.npy', allow_pickle=True)
     LR_valid = np.load('LR_valid.npy', allow_pickle=True)
     LR_test = np.load('LR_test.npy', allow_pickle=True)
-    print("Done loading datasets")
+    #print("Done loading datasets")
 
     # resize data
     for i in range(len(LR_train)):
@@ -273,14 +330,18 @@ if __name__ == "__main__":
     for i in range(len(HR_test)):
         HR_test[i] = np.array(HR_test[i])[0:162 * 4, 0:139 * 4, :]
 
-    print("Doing datasets")
+    #print("Doing datasets")
 
-    LR_train = np.array(LR_train)[0:int(len(LR_train)/600)]
-    HR_train = np.array(HR_train)[0:int(len(HR_train)/600)]
+    LR_train = np.array(LR_train)[0:int(len(LR_train)/3600)]
+    HR_train = np.array(HR_train)[0:int(len(HR_train)/3600)]
+
+    #LR_train = np.repeat(LR_train, 100, axis=0)
+    #HR_train = np.repeat(HR_train, 100, axis=0)
+
     print('Resize done')
 
     batch_size1 = 2
     train_loader, val_loader, test_loader = load_data(HR_train, HR_valid, HR_test, LR_train, LR_valid, LR_test, batch_size1)
 
-    training_GAN(batch_size=batch_size1, gen_lr=0.1, dis_lr=0.1, epochs=1, resid_block_num=16, num_channel=batch_size1, kernel_size=3,
+    training_GAN(batch_size=batch_size1, gen_lr=0.1, dis_lr=0.1, epochs=1000, resid_block_num=16, num_channel=batch_size1, kernel_size=3,
                  gen_weights="", dis_weights="", cuda1=False, train_loader=train_loader, val_loader=val_loader, test_loader=test_loader)
