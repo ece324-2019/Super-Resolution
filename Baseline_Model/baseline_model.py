@@ -5,11 +5,13 @@ import matplotlib.pyplot as plot
 def average(img):
     # create an empty array with 4x size of the original image
     new_img = np.array([[[0., 0., 0.]] * 2 * len(img[0])] * 2 * len(img))
+    img = img[:,:,0:3]
 
     # fill up the new image with the original one in alternating rows and columns
     for i in range(len(img)):
         for j in range(len(img[0])):
-            new_img[i * 2][np.array([j * 2])] = img[i, j, :]
+            #new_img[i * 2][np.array([j * 2])] = img[i, j, :]
+            new_img[i * 2, j * 2, :] = img[i, j][0:3]
 
     # compute the average RGB of the neighbours for the empty ones
     for i in range(len(img) - 1):
