@@ -127,6 +127,7 @@ class Discriminator1(nn.Module):
         super(Discriminator1, self).__init__()
         self.name = "Discriminator"
         self.batch_size = batch_size
+        # should change the out_channels size of conv1 from batch_size to like 50 or 60 or 80
         self.conv1 = nn.Conv2d(in_channels=3, out_channels=self.batch_size, kernel_size=3, stride=1, padding=1)
         self.conv2 = nn.Conv2d(in_channels=self.batch_size, out_channels=self.batch_size, kernel_size=3, stride=2, padding=1)
         self.batch_norm1 = nn.BatchNorm2d(self.batch_size)
