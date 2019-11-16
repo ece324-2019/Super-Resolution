@@ -2,48 +2,49 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1c3c11c7-31c9-4237-90d8-b2195369d8b6" name="Default Changelist" comment="Save images into numpy files">
+      <change afterPath="$PROJECT_DIR$/Data_processing/loss.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Discriminator.pt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generator.pt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/Discriminator.pt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/Generator.pt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_000.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_001.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_002.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_003.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_004.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_005.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_006.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_007.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_008.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_009.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_010.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_011.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_012.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_013.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_014.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_015.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_016.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_017.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_018.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_019.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_020.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_021.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_022.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_023.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_024.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_025.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_026.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_027.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_028.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_029.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_030.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_031.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_032.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_033.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_034.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_035.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_036.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/D.pt" beforeDir="false" afterPath="$PROJECT_DIR$/D.pt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/G.pt" beforeDir="false" afterPath="$PROJECT_DIR$/G.pt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/Discriminator.pt" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/Discriminator.pt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/Generator.pt" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/Generator.pt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_000.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_000.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_001.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_001.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_002.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_002.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_003.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_003.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_004.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_004.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_005.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_005.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_006.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_006.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_007.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_007.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_008.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_008.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_009.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_009.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_010.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_010.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_011.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_011.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_012.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_012.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_013.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_013.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_014.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_014.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_015.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_015.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_016.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_016.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_017.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_017.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_018.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_018.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_019.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_019.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_020.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_020.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_021.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_021.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_022.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_022.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_023.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_023.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_024.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_024.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_025.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_025.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_026.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_026.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_027.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_027.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_028.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_028.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_029.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_029.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_030.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_030.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_031.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_031.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_032.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_032.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_033.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_033.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_034.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_034.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_035.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_035.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_036.png" beforeDir="false" afterPath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_036.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_037.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_038.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_039.png" beforeDir="false" />
@@ -139,43 +140,6 @@
       <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_129.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_130.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Model Checkpoints/fake_images_Epoch_131.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_000.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_001.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_002.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_003.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_004.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_005.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_006.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_007.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_008.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_009.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_010.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_011.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_012.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_013.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_014.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_015.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_016.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_017.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_018.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_019.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_020.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_021.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_022.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_023.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_024.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_025.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_026.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_027.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_028.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_029.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_030.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_031.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_032.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_033.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_034.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_035.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_036.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_037.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_038.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_039.png" beforeDir="false" />
@@ -272,8 +236,7 @@
       <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_130.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_131.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Model Checkpoints/real_images_Epoch_132.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lr=0.001_D.pt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lr=0.001_G.pt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/train.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
