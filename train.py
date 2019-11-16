@@ -210,8 +210,8 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
 
     train_loss_G = np.array(train_loss_G)
     valid_loss_G = np.array(valid_loss_G)
-    psnr_I = np.array(psnr_I)
-    psnr_G = np.array(psnr_G)
+    psnr_I.append(np.array(psnr_I))
+    psnr_G.append(np.array(psnr_G))
 
     np.save("Training_loss_G", train_loss_G)
     np.save("Validation_loss_g", valid_loss_G)
@@ -258,6 +258,8 @@ def evaluate_valid(valid_loader, actual_G_loss1, fake_input1, content_loss_func,
     total_psnr_G, total_psnr_I = evaluate(low_img1, noise_output1, real_img1)
     psnr_G.append(total_psnr_G)
     psnr_I.append(total_psnr_I)
+
+    print('psnr: ' ,psnr_G)
 
     training_loss_G.append(actual_G_loss1)
 
@@ -347,5 +349,5 @@ if __name__ == "__main__":
     batch_size1 = 2
     train_loader, val_loader, test_loader = load_data(HR_train, HR_valid, HR_test, LR_train, LR_valid, LR_test, batch_size1)
 
-    training_GAN(batch_size=batch_size1, gen_lr=0.001, dis_lr=0.1, epochs=1000, resid_block_num=18, num_channel=20, kernel_size=3,
-                 gen_weights='', dis_weights='', cuda1=False, train_loader=train_loader, val_loader=val_loader, test_loader=test_loader)
+    training_GAN(batch_size=batch_size1, gen_lr=3e-5, dis_lr=0.1, epochs=1000, resid_block_num=18, num_channel=20, kernel_size=3,
+                 gen_weights='G.pt', dis_weights='D.pt', cuda1=False, train_loader=train_loader, val_loader=val_loader, test_loader=test_loader)
