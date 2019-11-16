@@ -36,10 +36,11 @@ def average(img):
 
 
 def main():
-    img_name = '0001x4m'
+    img_name = '1_0'
     ext = '.png'
 
     # load image
+    print(img_name+ext)
     img = plot.imread(img_name + ext)
 
     img = average(average(img))
