@@ -142,40 +142,59 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
             actual_G_loss.backward()
             G_optim.step()
             #print("here")
-
             valid_loss_G, train_loss_G, psnr_G, psnr_I = evaluate_valid(val_loader, actual_G_loss.item(), fake_input, content_loss_func, adv_loss_func, train_loss_G, G, D)
             #print('[%d/%d][%d/%d] Loss_D: %.4f Loss_G: %.4f' %(epoch.item(), 25, i, len(train_loader), error_D.data[0].item(), actual_G_loss.data[0].item())) ############### --> idk
 
-        print("Epoch" + str(epoch) + "Ended")
-        torch.save(D.state_dict(), "Model Checkpoints/{}.pt".format(D.name))
-        torch.save(G.state_dict(), "Model Checkpoints/{}.pt".format(G.name))
-        print("Fake image accuracy(Discriminator)", corr_fake_D / len(train_loader.dataset))
-        print("Real Image Accuracy (Discriminator)", correct_D / len(train_loader.dataset))
-        print("Combined Accuracy (Discriminator)", ((corr_fake_D + correct_D) / (2 * len(train_loader.dataset))))
-        corr_fake_D, correct_D = 0, 0
 
-        '''save real image here'''
-        temp = torch.transpose(real_img[0], 0, 2).numpy()
-        temp = Image.fromarray(temp)
-        temp.save('Model Checkpoints/real_images_Epoch_%03d.png' % epoch)
+            #print("Epoch" + str(epoch) + "Ended")
+            torch.save(D.state_dict(), "Model Checkpoints/{}.pt".format(D.name))
+            torch.save(G.state_dict(), "Model Checkpoints/{}.pt".format(G.name))
+            #print("Fake image accuracy(Discriminator)", corr_fake_D / len(train_loader.dataset))
+            #print("Real Image Accuracy (Discriminator)", correct_D / len(train_loader.dataset))
+            #print("Combined Accuracy (Discriminator)", ((corr_fake_D + correct_D) / (2 * len(train_loader.dataset))))
+            print("Fake image accuracy(Discriminator)", corr_fake_D / batch_size)
+            print("Real Image Accuracy (Discriminator)", correct_D / batch_size)
+            print("Combined Accuracy (Discriminator)", ((corr_fake_D + correct_D) / (2 * batch_size)))
+            corr_fake_D, correct_D = 0, 0
 
-        '''save fake image here'''
-        fake11 = G(noise1.float())
-        temp = torch.transpose(fake11[0].detach(), 0, 2)
-        temp = torch.transpose(temp.detach(), 1, 0)
-        max_num = max(temp.flatten())
-        min_num = min(temp.flatten())
-        print('before sig', max_num, min_num)
-        temp = (temp - min_num)/(max_num-min_num)
-        #temp = torch.sigmoid(temp).numpy()
-        #print('after sig', max(temp.flatten()), min(temp.flatten()))
-        #print(type(temp), temp.shape, type(temp[0][0][0]), temp[0][0][0])
-        #print(temp.shape)
-        #temp = Image.fromarray(temp)
-        #temp.save('Model Checkpoints/fake_images_Epoch_%03d.png' % epoch)
-        plt.imshow(temp)
-        #plt.show()
-        plt.savefig('Model Checkpoints/fake_images_Epoch_%03d.png' % epoch)
+            '''save real image here'''
+            temp = torch.transpose(real_img[0], 0, 2).numpy()
+            temp = Image.fromarray(temp)
+            filename = 'real_Epoch_' + str(epoch) + '_batch_' + str(i) + '.png'
+            temp.save('Model Checkpoints/' + filename)
+
+            '''save fake image here'''
+            fake11 = G(noise1.float())
+            temp = torch.transpose(fake11[0].detach(), 0, 2)
+            temp = torch.transpose(temp.detach(), 1, 0)
+            max_num = max(temp.flatten())
+            min_num = min(temp.flatten())
+            print('before sig', max_num, min_num)
+            temp = (temp - min_num)/(max_num-min_num)
+
+            # temp = torch.sigmoid(temp).numpy()
+            # print('after sig', max(temp.flatten()), min(temp.flatten()))
+            # print(type(temp), temp.shape, type(temp[0][0][0]), temp[0][0][0])
+            # print(temp.shape)
+            # temp = Image.fromarray(temp)
+            # temp.save('Model Checkpoints/fake_images_Epoch_%03d.png' % epoch)
+
+            plt.imshow(temp)
+            #plt.show()
+            filename = 'fake_Epoch_' + str(epoch) + '_batch_' + str(i) + '.png'
+            plt.savefig('Model Checkpoints/' + filename)
+            train_loss_G = np.array(train_loss_G)
+            valid_loss_G = np.array(valid_loss_G)
+            psnr_I.append(np.array(psnr_I))
+            psnr_G.append(np.array(psnr_G))
+
+            np.save("Training_loss_G", train_loss_G)
+            np.save("Validation_loss_g", valid_loss_G)
+            np.save("psnr_I", psnr_I)
+            np.save("psnr_G", psnr_G)
+
+            torch.save(D.state_dict(), "{}.pt".format(D.name))
+            torch.save(G.state_dict(), "{}.pt".format(G.name))
 
 
         '''
@@ -208,20 +227,6 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
         # temp.save('Model Checkpoints/fake_images_Epoch_%03d.png' % epoch)
         '''
 
-    train_loss_G = np.array(train_loss_G)
-    valid_loss_G = np.array(valid_loss_G)
-    psnr_I.append(np.array(psnr_I))
-    psnr_G.append(np.array(psnr_G))
-
-    np.save("Training_loss_G", train_loss_G)
-    np.save("Validation_loss_g", valid_loss_G)
-    np.save("psnr_I", psnr_I)
-    np.save("psnr_G", psnr_G)
-
-    torch.save(D.state_dict(), "{}.pt".format(D.name))
-    torch.save(G.state_dict(), "{}.pt".format(G.name))
-
-    return True
 
 
 
@@ -261,7 +266,8 @@ def evaluate_valid(valid_loader, actual_G_loss1, fake_input1, content_loss_func,
 
     print('psnr: ' ,psnr_G)
 
-    training_loss_G.append(actual_G_loss1)
+    #training_loss_G.append(actual_G_loss1)
+    np.append(training_loss_G, actual_G_loss1)
 
     #Validation Loss Stuff
     real_img1 = real_img
@@ -314,13 +320,50 @@ def evaluate(low_img, noise_output, real_img):
 if __name__ == "__main__":
     # load iterator
     #print("loading datasets")
-    HR_train = np.load('HR_train.npy')
-    HR_valid = np.load('HR_valid.npy')
-    HR_test = np.load('HR_test.npy')
-    LR_train = np.load('LR_train.npy', allow_pickle=True)
-    LR_valid = np.load('LR_valid.npy', allow_pickle=True)
-    LR_test = np.load('LR_test.npy', allow_pickle=True)
-    #print("Done loading datasets")
+    LR_train = []
+    for i in range(1, 1201):
+        for j in range(6):
+            name = str(i) + '_' + str(j) + '.png'
+            im = Image.open('new/ds_train/ds_train_pic/' + name)
+            LR_train.append(np.array(im))
+    print(len(LR_train))
+    HR_train = []
+    for i in range(1, 1201):
+        for j in range(6):
+            name = str(i) + '.png'
+            im = Image.open('new/hr_train/hr_train_pic/' + name)
+            HR_train.append(np.array(im))
+    print(len(HR_train))
+
+    LR_valid = []
+    for i in range(1201, 1551):
+        for j in range(6):
+            name = str(i) + '_' + str(j) + '.png'
+            im = Image.open('new/ds_valid/ds_valid_pic/' + name)
+            LR_valid.append(np.array(im))
+    print(len(LR_valid))
+    HR_valid = []
+    for i in range(1201, 1551):
+        for j in range(6):
+            name = str(i) + '.png'
+            im = Image.open('new/hr_valid/hr_valid_pic/' + name)
+            HR_valid.append(np.array(im))
+    print(len(HR_valid))
+
+    LR_test = []
+    for i in range(1551, 1601):
+        for j in range(6):
+            name = str(i) + '_' + str(j) + '.png'
+            im = Image.open('new/ds_test/ds_test_pic/' + name)
+            LR_test.append(np.array(im))
+    print(len(LR_test))
+    HR_test = []
+    for i in range(1551, 1601):
+        for j in range(6):
+            name = str(i) + '.png'
+            im = Image.open('new/hr_test/hightest/hr_test_pic/' + name)
+            HR_test.append(np.array(im))
+    print(len(HR_test))
 
     # resize data
     for i in range(len(LR_train)):
@@ -338,16 +381,13 @@ if __name__ == "__main__":
 
     #print("Doing datasets")
 
-    LR_train = np.array(LR_train)[0:int(len(LR_train)/3600)]
-    HR_train = np.array(HR_train)[0:int(len(HR_train)/3600)]
-
-    #LR_train = np.repeat(LR_train, 100, axis=0)
-    #HR_train = np.repeat(HR_train, 100, axis=0)
+    LR_train = np.array(LR_train)[0:int(len(LR_train)/6)]
+    HR_train = np.array(HR_train)[0:int(len(HR_train)/6)]
 
     print('Resize done')
 
-    batch_size1 = 2
+    batch_size1 = 16
     train_loader, val_loader, test_loader = load_data(HR_train, HR_valid, HR_test, LR_train, LR_valid, LR_test, batch_size1)
 
-    training_GAN(batch_size=batch_size1, gen_lr=3e-5, dis_lr=0.1, epochs=1000, resid_block_num=18, num_channel=20, kernel_size=3,
-                 gen_weights='G.pt', dis_weights='D.pt', cuda1=False, train_loader=train_loader, val_loader=val_loader, test_loader=test_loader)
+    training_GAN(batch_size=batch_size1, gen_lr=5e-4, dis_lr=0.1, epochs=1000, resid_block_num=18, num_channel=20, kernel_size=3,
+                 gen_weights='', dis_weights='', cuda1=False, train_loader=train_loader, val_loader=val_loader, test_loader=test_loader)
