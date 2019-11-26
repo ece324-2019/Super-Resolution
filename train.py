@@ -26,7 +26,7 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
 
     sample_fac = 4
 
-    G, D, G_loss_func, D_loss_func, G_optim, D_optim = load_model(gen_lr, dis_lr, resid_block_num, num_channel,
+    G, D, D_loss_func, G_optim, D_optim = load_model(gen_lr, dis_lr, resid_block_num, num_channel,
                                                                   kernel_size, sample_fac, batch_size)
 
     # If we want to continue training from where we left off:
