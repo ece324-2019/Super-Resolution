@@ -171,11 +171,10 @@ def load_model(gen_lr, dis_lr, resid_block_num, num_channel, kernel_size, sample
     gen1 = Generator1(num_blocks=resid_block_num, upsample_factor=sample_fac, out_channel_num=num_channel,
                       kernel_size=kernel_size, stride_num=1)
     dis1 = Discriminator1(batch_s)
-    gen_loss1 = nn.BCELoss()
     dis_loss1 = nn.BCELoss()
     gen_optim1 = optim.Adam(gen1.parameters(), lr=gen_lr, betas=(0.9, 0.999))  # betas can be changed
     dis_optim1 = optim.Adam(dis1.parameters(), lr=dis_lr, betas=(0.9, 0.999))  # betas can be changed
-    return gen1, dis1, gen_loss1, dis_loss1, gen_optim1, dis_optim1
+    return gen1, dis1, dis_loss1, gen_optim1, dis_optim1
 
 
 def load_data(HR_train, HR_val, HR_test, LR_train, LR_val, LR_test, batch_s):
