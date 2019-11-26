@@ -32,11 +32,16 @@ class ImageDataset(data.Dataset):
 
 # Activation function used for both networks (from paper: https://arxiv.org/pdf/1710.05941.pdf)
 def swish_actf(x):
-    return x * torch.sigmoid(x)
+    m = nn.LeakyReLU(0.1)
+    return m(x)
+    #return x * torch.sigmoid(x)
 
 
 # Model (Generator)
 # Can experiment with number of residual blocks, channel numbers, kernel size, and stride number.
+# 46 conv layers 
+# 37 BN layers
+# No linear layers
 
 class Generator1(nn.Module):
     def __init__(self, num_blocks=16, upsample_factor=2, out_channel_num=64, kernel_size=3, stride_num=1):
@@ -110,8 +115,6 @@ class upsample_block(nn.Module):
     def __init__(self, in_channel, out_channel, kernels, strides, up_scale_factor):
         super(upsample_block, self).__init__()
         self.name = "upsample_block"
-        #self.conv1 = nn.Conv2d(in_channels=in_channel, out_channels=in_channel * up_scale_factor ** 2,
-        #                       kernel_size=kernels, stride=strides, padding=int(kernels / 2))
         self.conv1 = nn.Conv2d(in_channels=in_channel, out_channels=out_channel,
                                kernel_size=kernels, stride=strides, padding=int(kernels / 2))
         self.shuffler = nn.PixelShuffle(up_scale_factor)
@@ -122,12 +125,13 @@ class upsample_block(nn.Module):
         return y
 
 
+# 8 BN Layers
+# 9 conv layers
 class Discriminator1(nn.Module):
     def __init__(self, batch_size):
         super(Discriminator1, self).__init__()
         self.name = "Discriminator"
         self.batch_size = batch_size
-        # should change the out_channels size of conv1 from batch_size to like 50 or 60 or 80
         self.conv1 = nn.Conv2d(in_channels=3, out_channels=self.batch_size, kernel_size=3, stride=1, padding=1)
         self.conv2 = nn.Conv2d(in_channels=self.batch_size, out_channels=self.batch_size, kernel_size=3, stride=2, padding=1)
         self.batch_norm1 = nn.BatchNorm2d(self.batch_size)
@@ -144,9 +148,7 @@ class Discriminator1(nn.Module):
         self.conv8 = nn.Conv2d(in_channels=self.batch_size*8, out_channels=self.batch_size*8, kernel_size=3, stride=2, padding=1)
         self.batch_norm7 = nn.BatchNorm2d(self.batch_size*8)
         #self.pool1 = nn.AdaptiveAvgPool2d(1)
-        self.conv9 = nn.Conv2d(in_channels=self.batch_size*8, out_channels=1,
-                               kernel_size=1)
-        #self.conv10 = nn.Conv2d(in_channels=self.batch_size*16, out_channels=1, kernel_size=1)
+        self.conv9 = nn.Conv2d(in_channels=self.batch_size*8, out_channels=1, kernel_size=1)
 
     def forward(self, x):
         x = self.conv1(x)
@@ -161,9 +163,9 @@ class Discriminator1(nn.Module):
         x = swish_actf(self.batch_norm7(self.conv8(x)))
         x = self.conv9(x)
         x = F.avg_pool2d(x, x.size()[2:])
+        #x = torch.nn.MaxPool2d(x, x.size()[2:])
         x = torch.sigmoid(x)
         x = x.view(x.size()[0], -1)
-        #print('x shape', x.shape)
         return x
 
 
