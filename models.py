@@ -79,8 +79,7 @@ class Generator1(nn.Module):
         #print('x', x.shape)
         x = x1 + self.bn2(self.conv2(x))
         #print('x', x.shape)
-        for i in range(int(self.upsample_factor / 4)):
-            x = self.__getattr__('upsample_block' + str(i + 1))(x)
+        x = self.upsample_block1(x)
         #print('x', x.shape)
         return self.conv3(x)
 

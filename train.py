@@ -142,7 +142,7 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
             actual_G_loss.backward()
             G_optim.step()
             #print("here")
-            valid_loss_G, train_loss_G, psnr_G, psnr_I = evaluate_valid(val_loader, actual_G_loss.item(), fake_input, content_loss_func, adv_loss_func, train_loss_G, G, D)
+            valid_loss_G, train_loss_G, psnr_G = evaluate_valid(val_loader, actual_G_loss.item(), fake_input, content_loss_func, adv_loss_func, train_loss_G, G, D)
 
 
             #print("Epoch" + str(epoch) + "Ended")
@@ -184,55 +184,19 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
             plt.savefig('Model Checkpoints/' + filename)
             train_loss_G = np.array(train_loss_G)
             valid_loss_G = np.array(valid_loss_G)
-            psnr_I.append(np.array(psnr_I))
             psnr_G.append(np.array(psnr_G))
 
             np.save("Training_loss_G", train_loss_G)
             np.save("Validation_loss_g", valid_loss_G)
-            np.save("psnr_I", psnr_I)
             np.save("psnr_G", psnr_G)
 
             torch.save(D.state_dict(), "{}.pt".format(D.name))
             torch.save(G.state_dict(), "{}.pt".format(G.name))
 
 
-        '''
-        fake11 = G(noise1.float())
-        img = fake11[0]
-        #print(fake11[0].shape, type(fake11[0]))
-        #temp = torch.transpose(fake11[0],1,2)
-        #temp = torch.transpose(temp,0,2)
-        utils.save_image(img, 'Model Checkpoints/fake_images_Epoch_%03d.png' % epoch, normalize=True)
-
-        
-        #temp = torch.transpose(real_img[0], 0, 2).numpy()
-        #temp = Image.fromarray(temp.numpy())
-        #temp.save('Model Checkpoints/real_images_Epoch_%03d.png' % epoch)
-        #plt.imshow(temp)
-        #plt.savefig('Model Checkpoints/real_images_Epoch_%03d.png' % epoch)
-
-        fake11 = G(noise1.float())
-        temp = torch.transpose(fake11[0].detach(), 0, 2)
-        #print(type(temp), temp.shape)
-        # utils.save_image(temp, 'Model Checkpoints/fake_images_Epoch_%03d.png' % epoch, normalize=True)
-        
-        temp = temp.numpy()
-        #print(type(temp), temp.shape)
-        # temp = Image.fromarray(temp)
-        temp = np.clip(temp, 0.0, 1.0)
-        plt.imshow(temp)
-        plt.show()
-        plt.savefig('Model Checkpoints/fake_images_Epoch_%03d.png' % epoch)
-        # temp.save('Model Checkpoints/fake_images_Epoch_%03d.png' % epoch)
-        '''
-
-
-
-
 # Evaluation on validation dataset
 def evaluate_valid(valid_loader, actual_G_loss1, fake_input1, content_loss_func, adv_loss_func, training_loss_G, G, D):
   psnr_G = []
-  psnr_I = []
   valid_loss_G = []
   for i, batch in enumerate(valid_loader):
     if i > 0 :
@@ -259,9 +223,8 @@ def evaluate_valid(valid_loader, actual_G_loss1, fake_input1, content_loss_func,
     low_img1 = np.array(low_img.detach())
     real_img1 = np.array(real_img.detach())
 
-    total_psnr_G, total_psnr_I = evaluate(low_img1, noise_output1, real_img1)
+    total_psnr_G= evaluate(low_img1, noise_output1, real_img1)
     psnr_G.append(total_psnr_G)
-    psnr_I.append(total_psnr_I)
 
     print('psnr: ' ,psnr_G)
 
@@ -287,13 +250,11 @@ def evaluate_valid(valid_loader, actual_G_loss1, fake_input1, content_loss_func,
     G_adv_l = adv_loss_func(output_val, ones11.float())
     total_loss_G = G_content_l + 1e-3 * G_adv_l  # prob wanna change this code
     valid_loss_G.append(total_loss_G.item())
-    return valid_loss_G, training_loss_G, psnr_G, psnr_I
+    return valid_loss_G, training_loss_G, psnr_G
 
 
 def evaluate(low_img, noise_output, real_img):
     batch_size = real_img.shape[0]
-    interpolated_img = np.zeros(real_img.shape)
-    psnr_I_np = np.zeros(batch_size)
     psnr_G_np = np.zeros(batch_size)
 
     #print('shape', low_img.shape)
@@ -302,23 +263,16 @@ def evaluate(low_img, noise_output, real_img):
         #low_img = torch.transpose(torch.tensor(low_img[i]), 0, 2)
         #real_img = torch.transpose(torch.tensor(real_img[i]), 0, 2)
         #print(low_img[i].shape, real_img[i].shape)
-        #interpolated_img[i] = resize(low_img[i], (556, 648))
 
-        interpolated_img[i] = np.repeat(np.repeat(low_img[i], 4, axis=1), 4, axis=2)
-
-        #print(real_img[i].shape, interpolated_img[i].shape)
-        psnr_I_np[i] = compare_psnr(real_img[i], interpolated_img[i])
         psnr_G_np[i] = compare_psnr(real_img[i], noise_output[i])
-    total_psnr_I = np.sum(psnr_I_np)
     total_psnr_G = np.sum(psnr_G_np)
 
-    return total_psnr_G, total_psnr_I
+    return total_psnr_G
 
 
 
 if __name__ == "__main__":
     # load iterator
-    #print("loading datasets")
     LR_train = []
     for i in range(1, 1201):
         for j in range(6):
