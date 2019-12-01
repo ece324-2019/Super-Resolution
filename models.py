@@ -64,11 +64,9 @@ class Generator1(nn.Module):
                                kernel_size=self.kernel_size, stride=self.stride_num, padding=int(self.kernel_size / 2))
         self.bn2 = nn.BatchNorm2d(out_channel_num)
 
-        for j in range(int(self.upsample_factor / 4)):
-            out_chan = self.out_channel_num*(self.upsample_factor**2)
-            self.add_module('upsample_block' + str(j + 1),
-                            upsample_block(in_channel=self.out_channel_num, out_channel=out_chan, kernels=3, strides=1,
-                                           up_scale_factor=upsample_factor))
+        out_chan = self.out_channel_num*(self.upsample_factor**2)
+        self.upsample_block1 = upsample_block(in_channel=self.out_channel_num, out_channel=out_chan, kernels=3, strides=1,
+                                up_scale_factor=upsample_factor)
 
         self.conv3 = nn.Conv2d(in_channels=self.out_channel_num, out_channels=3, kernel_size=9, stride=self.stride_num,
                                padding=4)
