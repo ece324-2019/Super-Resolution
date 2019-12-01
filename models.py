@@ -76,11 +76,8 @@ class Generator1(nn.Module):
         x1 = x.clone()
         for i in range(self.num_blocks):
             x = self.__getattr__('residual_block' + str(i + 1))(x)
-        #print('x', x.shape)
         x = x1 + self.bn2(self.conv2(x))
-        #print('x', x.shape)
         x = self.upsample_block1(x)
-        #print('x', x.shape)
         return self.conv3(x)
 
 
