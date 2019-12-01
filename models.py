@@ -76,11 +76,8 @@ class Generator1(nn.Module):
         x1 = x.clone()
         for i in range(self.num_blocks):
             x = self.__getattr__('residual_block' + str(i + 1))(x)
-        #print('x', x.shape)
         x = x1 + self.bn2(self.conv2(x))
-        #print('x', x.shape)
         x = self.upsample_block1(x)
-        #print('x', x.shape)
         return self.conv3(x)
 
 
@@ -144,7 +141,6 @@ class Discriminator1(nn.Module):
         self.batch_norm6 = nn.BatchNorm2d(self.batch_size*8)
         self.conv8 = nn.Conv2d(in_channels=self.batch_size*8, out_channels=self.batch_size*8, kernel_size=3, stride=2, padding=1)
         self.batch_norm7 = nn.BatchNorm2d(self.batch_size*8)
-        #self.pool1 = nn.AdaptiveAvgPool2d(1)
         self.conv9 = nn.Conv2d(in_channels=self.batch_size*8, out_channels=1, kernel_size=1)
 
     def forward(self, x):
