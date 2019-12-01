@@ -16,13 +16,13 @@ import torchvision
 import torchvision.utils as utils # Used in Training loop
 from models import *
 
-torch.manual_seed(1000)
+torch.manual_seed(100)
 
 # GAN Training code
 
 def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channel, kernel_size, gen_weights,
                  dis_weights, cuda1, train_loader, val_loader, test_loader):
-    torch.manual_seed(1000)
+    torch.manual_seed(100)
 
     sample_fac = 4
 
@@ -389,5 +389,5 @@ if __name__ == "__main__":
     batch_size1 = 16
     train_loader, val_loader, test_loader = load_data(HR_train, HR_valid, HR_test, LR_train, LR_valid, LR_test, batch_size1)
 
-    training_GAN(batch_size=batch_size1, gen_lr=1e-3, dis_lr=0.1, epochs=1000, resid_block_num=18, num_channel=20, kernel_size=3,
+    training_GAN(batch_size=batch_size1, gen_lr=1e-3, dis_lr=0.01, epochs=1000, resid_block_num=18, num_channel=20, kernel_size=3,
                  gen_weights='Generator.pt', dis_weights='Discriminator.pt', cuda1=False, train_loader=train_loader, val_loader=val_loader, test_loader=test_loader)

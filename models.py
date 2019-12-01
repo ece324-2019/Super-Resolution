@@ -163,7 +163,6 @@ class Discriminator1(nn.Module):
         x = swish_actf(self.batch_norm7(self.conv8(x)))
         x = self.conv9(x)
         x = F.avg_pool2d(x, x.size()[2:])
-        #x = torch.nn.MaxPool2d(x, x.size()[2:])
         x = torch.sigmoid(x)
         x = x.view(x.size()[0], -1)
         return x
