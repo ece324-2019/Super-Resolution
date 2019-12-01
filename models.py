@@ -134,6 +134,44 @@ class Discriminator1(nn.Module):
         self.batch_norm1 = nn.BatchNorm2d(self.batch_size)
         self.conv3 = nn.Conv2d(in_channels=self.batch_size, out_channels=self.batch_size*2, kernel_size=3, stride=1, padding=1)
         self.batch_norm2 = nn.BatchNorm2d(self.batch_size*2)
+        self.conv4 = nn.Conv2d(in_channels=self.batch_size*2, out_channels=self.batch_size*4, kernel_size=3, padding=1)
+        self.batch_norm3 = nn.BatchNorm2d(self.batch_size*4)
+        self.conv5 = nn.Conv2d(in_channels=self.batch_size*4, out_channels=self.batch_size*8, kernel_size=3, padding=1)
+        self.batch_norm4 = nn.BatchNorm2d(self.batch_size*8)
+        self.conv6 = nn.Conv2d(in_channels=self.batch_size * 8, out_channels=self.batch_size * 8, kernel_size=3, padding=1)
+        self.batch_norm5 = nn.BatchNorm2d(self.batch_size * 8)
+        self.conv7 = nn.Conv2d(in_channels=self.batch_size * 8, out_channels=self.batch_size * 4, kernel_size=3, padding=1)
+        self.batch_norm6 = nn.BatchNorm2d(self.batch_size * 4)
+        self.conv8 = nn.Conv2d(in_channels=self.batch_size * 4, out_channels=self.batch_size * 2, kernel_size=3, padding=1)
+        self.batch_norm7 = nn.BatchNorm2d(self.batch_size * 2)
+        self.conv9 = nn.Conv2d(in_channels=self.batch_size * 2, out_channels=1, kernel_size=1)
+
+    def forward(self, x):
+        x = self.conv1(x)
+        x = swish_actf(x)
+        x = swish_actf(self.batch_norm1(self.conv2(x)))
+        x = swish_actf(self.batch_norm2(self.conv3(x)))
+        x = swish_actf(self.batch_norm3(self.conv4(x)))
+        x = swish_actf(self.batch_norm4(self.conv5(x)))
+        x = swish_actf(self.batch_norm5(self.conv6(x)))
+        x = swish_actf(self.batch_norm6(self.conv7(x)))
+        x = swish_actf(self.batch_norm7(self.conv8(x)))
+        x = self.conv9(x)
+        x = F.avg_pool2d(x, x.size()[2:])
+        x = torch.sigmoid(x)
+        x = x.view(x.size()[0], -1)
+        return x
+
+"""class Discriminator1(nn.Module):
+    def __init__(self, batch_size):
+        super(Discriminator1, self).__init__()
+        self.name = "Discriminator"
+        self.batch_size = batch_size
+        self.conv1 = nn.Conv2d(in_channels=3, out_channels=self.batch_size, kernel_size=3, stride=1, padding=1)
+        self.conv2 = nn.Conv2d(in_channels=self.batch_size, out_channels=self.batch_size, kernel_size=3, stride=2, padding=1)
+        self.batch_norm1 = nn.BatchNorm2d(self.batch_size)
+        self.conv3 = nn.Conv2d(in_channels=self.batch_size, out_channels=self.batch_size*2, kernel_size=3, stride=1, padding=1)
+        self.batch_norm2 = nn.BatchNorm2d(self.batch_size*2)
         self.conv4 = nn.Conv2d(in_channels=self.batch_size*2, out_channels=self.batch_size*2, kernel_size=3, stride=2, padding=1)
         self.batch_norm3 = nn.BatchNorm2d(self.batch_size*2)
         self.conv5 = nn.Conv2d(in_channels=self.batch_size*2, out_channels=self.batch_size*4, kernel_size=3, padding=1)
@@ -144,7 +182,6 @@ class Discriminator1(nn.Module):
         self.batch_norm6 = nn.BatchNorm2d(self.batch_size*8)
         self.conv8 = nn.Conv2d(in_channels=self.batch_size*8, out_channels=self.batch_size*8, kernel_size=3, stride=2, padding=1)
         self.batch_norm7 = nn.BatchNorm2d(self.batch_size*8)
-        #self.pool1 = nn.AdaptiveAvgPool2d(1)
         self.conv9 = nn.Conv2d(in_channels=self.batch_size*8, out_channels=1, kernel_size=1)
 
     def forward(self, x):
@@ -162,7 +199,7 @@ class Discriminator1(nn.Module):
         x = F.avg_pool2d(x, x.size()[2:])
         x = torch.sigmoid(x)
         x = x.view(x.size()[0], -1)
-        return x
+        return x"""
 
 
 def load_model(gen_lr, dis_lr, resid_block_num, num_channel, kernel_size, sample_fac, batch_s):

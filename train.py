@@ -220,10 +220,9 @@ def evaluate_valid(valid_loader, actual_G_loss1, fake_input1, content_loss_func,
 
     noise_output1 = noise_output.squeeze(1)
     noise_output1 = np.array(noise_output1.detach())
-    low_img1 = np.array(low_img.detach())
     real_img1 = np.array(real_img.detach())
 
-    total_psnr_G= evaluate(low_img1, noise_output1, real_img1)
+    total_psnr_G= evaluate(noise_output1, real_img1)
     psnr_G.append(total_psnr_G)
 
     print('psnr: ' ,psnr_G)
@@ -253,17 +252,12 @@ def evaluate_valid(valid_loader, actual_G_loss1, fake_input1, content_loss_func,
     return valid_loss_G, training_loss_G, psnr_G
 
 
-def evaluate(low_img, noise_output, real_img):
+def evaluate(noise_output, real_img):
     batch_size = real_img.shape[0]
     psnr_G_np = np.zeros(batch_size)
 
-    #print('shape', low_img.shape)
+    #print('shape', noise_output.shape)
     for i in range(batch_size):
-        #print(low_img[i].shape, real_img[i].shape)
-        #low_img = torch.transpose(torch.tensor(low_img[i]), 0, 2)
-        #real_img = torch.transpose(torch.tensor(real_img[i]), 0, 2)
-        #print(low_img[i].shape, real_img[i].shape)
-
         psnr_G_np[i] = compare_psnr(real_img[i], noise_output[i])
     total_psnr_G = np.sum(psnr_G_np)
 
@@ -343,4 +337,4 @@ if __name__ == "__main__":
     train_loader, val_loader, test_loader = load_data(HR_train, HR_valid, HR_test, LR_train, LR_valid, LR_test, batch_size1)
 
     training_GAN(batch_size=batch_size1, gen_lr=1e-3, dis_lr=0.01, epochs=1000, resid_block_num=18, num_channel=20, kernel_size=3,
-                 gen_weights='Generator.pt', dis_weights='Discriminator.pt', cuda1=False, train_loader=train_loader, val_loader=val_loader, test_loader=test_loader)
+                 gen_weights='Generator.pt', dis_weights='', cuda1=False, train_loader=train_loader, val_loader=val_loader, test_loader=test_loader)
