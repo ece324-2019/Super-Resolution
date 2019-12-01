@@ -47,7 +47,6 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
     corr_fake_D = 0
     correct_D = 0
     psnr_G = []  # Peak signal to noise ratio
-    psnr_I = []
     #ssim = []  # Structual similarity index
     #train_loss_D = []
     train_loss_G = []
