@@ -108,7 +108,6 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
             ones1 = Variable(torch.ones(real_img.size()[0]))
             if torch.cuda.is_available():
                 ones1 = ones1.cuda()
-            #print('almost')
 
             G_content_loss = content_loss_func(fake_input, real_img.float())
             G_adv_loss = adv_loss_func(output_D, ones1.float())
@@ -121,11 +120,9 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
 
             '''###############################################################################################'''
 
-            #print('almost there')
             #print(G_content_loss, G_adv_loss, G_content_loss.shape, G_adv_loss.shape)
             actual_G_loss.backward()
             G_optim.step()
-            #print("here")
             valid_loss_G, train_loss_G, psnr_G = evaluate_valid(val_loader, actual_G_loss.item(), fake_input, content_loss_func, adv_loss_func, train_loss_G, G, D)
 
 
