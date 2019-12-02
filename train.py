@@ -47,8 +47,6 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
     corr_fake_D = 0
     correct_D = 0
     psnr_G = []  # Peak signal to noise ratio
-    #ssim = []  # Structual similarity index
-    #train_loss_D = []
     train_loss_G = []
     valid_loss_G = []
     num_samples_trained = 0
@@ -56,7 +54,6 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
     # num_save = 0
 
     for epoch in range(epochs):
-        # train_bar = tqdm(train_loader)
         G.train()
         D.train()
         for i, batch in enumerate(train_loader):
@@ -81,39 +78,26 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
             noise1 = noise1.unsqueeze(1)
             if torch.cuda.is_available():
                 noise1 = noise1.cuda()
-            #print(noise1.shape)
             noise1 = torch.transpose(noise1, 1, 4).squeeze()
-            #noise1 = torch.transpose(noise1, 2, 3)
-            #print(noise1.shape)
-            ''''''''''''''''''''''''
+            
             fake_input = G(noise1.float())
-            #print('world')
             fake_input = torch.transpose(fake_input,2,3)
-
-            #print('generated: ', fake_input.shape)
 
             output_D = D(fake_input)
 
-            #print(fake_input.shape)
-
             output_D = output_D.view(-1)
-            #print('!!!')
 
             corr_fake_D += int(sum(output_D < 0.5))
-
-            #print(fake_input.shape)
 
             zeros1 = Variable(torch.zeros(real_img.size()[0]))
             if torch.cuda.is_available():
                 zeros1 = zeros1.cuda()
 
             D_loss_fake_img = D_loss_func(output_D, zeros1)
-            #print(fake_input.shape)
             error_D = D_loss_real_img + D_loss_fake_img
             error_D.backward(retain_graph=True)
             D_optim.step()
-            #print('yeah')
-            
+
             # Training the Generator
             G.zero_grad()
             #print(fake_input.shape, real_img.shape)
