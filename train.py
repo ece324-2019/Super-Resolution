@@ -16,13 +16,13 @@ import torchvision
 import torchvision.utils as utils # Used in Training loop
 from models import *
 
-torch.manual_seed(100)
+torch.manual_seed(1001)
 
 # GAN Training code
 
 def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channel, kernel_size, gen_weights,
                  dis_weights, cuda1, train_loader, val_loader, test_loader):
-    torch.manual_seed(100)
+    torch.manual_seed(1001)
 
     sample_fac = 4
 
@@ -69,9 +69,14 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
             if torch.cuda.is_available():
                 real_img = real_img.cuda()
             real_img = torch.transpose(real_img, 1, 3)
+
             output_fake_img = D(real_img.float())
             output_fake_img = output_fake_img.view(-1)
-            correct_D += int(sum(output_fake_img > 0.5))
+            for element in output_fake_img:
+                if element > 0.5:
+                    correct_D += 1
+            print('number of correct D ', correct_D, output_fake_img)
+
             ones1 = Variable(torch.ones(output_fake_img.size()[0]))
             if torch.cuda.is_available():
                 ones1 = ones1.cuda()
@@ -85,23 +90,19 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
             noise1 = torch.transpose(noise1, 1, 4).squeeze()
             #noise1 = torch.transpose(noise1, 2, 3)
             #print(noise1.shape)
-            ''''''''''''''''''''''''
-            fake_input = G(noise1.float())
-            #print('world')
-            fake_input = torch.transpose(fake_input,2,3)
 
+            fake_input = G(noise1.float())
+            fake_input = torch.transpose(fake_input,2,3)
             #print('generated: ', fake_input.shape)
 
             output_D = D(fake_input)
-
             #print(fake_input.shape)
 
             output_D = output_D.view(-1)
-            #print('!!!')
-
-            corr_fake_D += int(sum(output_D < 0.5))
-
-            #print(fake_input.shape)
+            for element in output_D:
+                if element < 0.5:
+                    corr_fake_D += 1
+            print('number of corr fake D ', corr_fake_D, output_D)
 
             zeros1 = Variable(torch.zeros(real_img.size()[0]))
             if torch.cuda.is_available():
@@ -148,9 +149,6 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
             #print("Epoch" + str(epoch) + "Ended")
             torch.save(D.state_dict(), "Model Checkpoints/{}.pt".format(D.name))
             torch.save(G.state_dict(), "Model Checkpoints/{}.pt".format(G.name))
-            #print("Fake image accuracy(Discriminator)", corr_fake_D / len(train_loader.dataset))
-            #print("Real Image Accuracy (Discriminator)", correct_D / len(train_loader.dataset))
-            #print("Combined Accuracy (Discriminator)", ((corr_fake_D + correct_D) / (2 * len(train_loader.dataset))))
             print("Fake image accuracy(Discriminator)", corr_fake_D / batch_size)
             print("Real Image Accuracy (Discriminator)", correct_D / batch_size)
             print("Combined Accuracy (Discriminator)", ((corr_fake_D + correct_D) / (2 * batch_size)))

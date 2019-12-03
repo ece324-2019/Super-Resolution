@@ -32,7 +32,7 @@ class ImageDataset(data.Dataset):
 
 # Activation function used for both networks (from paper: https://arxiv.org/pdf/1710.05941.pdf)
 def swish_actf(x):
-    # m = nn.LeakyReLU(0.1)             # leaky relu
+    # m = nn.LeakyReLU(0.01)              # leaky relu
     # return m(x)
     return x * torch.sigmoid(x)         # swish
 

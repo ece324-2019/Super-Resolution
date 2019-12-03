@@ -38,7 +38,7 @@ def average(img):
 
 
 def main():
-    img_name = '1_0'
+    img_name = '16_0'
     ext = '.png'
 
     # load image
