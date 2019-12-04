@@ -121,7 +121,7 @@ class upsample_block(nn.Module):
 
 # 8 BN Layers
 # 9 conv layers
-class Discriminator1(nn.Module):
+"""class Discriminator1(nn.Module):
     def __init__(self, batch_size):
         super(Discriminator1, self).__init__()
         self.name = "Discriminator"
@@ -157,9 +157,9 @@ class Discriminator1(nn.Module):
         x = F.avg_pool2d(x, x.size()[2:])
         x = torch.sigmoid(x)
         x = x.view(x.size()[0], -1)
-        return x
+        return x"""
 
-"""class Discriminator1(nn.Module):
+class Discriminator1(nn.Module):
     def __init__(self, batch_size):
         super(Discriminator1, self).__init__()
         self.name = "Discriminator"
@@ -196,7 +196,7 @@ class Discriminator1(nn.Module):
         x = F.avg_pool2d(x, x.size()[2:])
         x = torch.sigmoid(x)
         x = x.view(x.size()[0], -1)
-        return x"""
+        return x
 
 
 def load_model(gen_lr, dis_lr, resid_block_num, num_channel, kernel_size, sample_fac, batch_s):
