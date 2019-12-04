@@ -47,16 +47,12 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
     corr_fake_D = 0
     correct_D = 0
     psnr_G = []  # Peak signal to noise ratio
-    #ssim = []  # Structual similarity index
     #train_loss_D = []
     train_loss_G = []
     valid_loss_G = []
     num_samples_trained = 0
 
-    # num_save = 0
-
     for epoch in range(epochs):
-        # train_bar = tqdm(train_loader)
         G.train()
         D.train()
         for i, batch in enumerate(train_loader):
@@ -86,17 +82,12 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
             noise1 = noise1.unsqueeze(1)
             if torch.cuda.is_available():
                 noise1 = noise1.cuda()
-            #print(noise1.shape)
             noise1 = torch.transpose(noise1, 1, 4).squeeze()
-            #noise1 = torch.transpose(noise1, 2, 3)
-            #print(noise1.shape)
 
             fake_input = G(noise1.float())
             fake_input = torch.transpose(fake_input,2,3)
-            #print('generated: ', fake_input.shape)
 
             output_D = D(fake_input)
-            #print(fake_input.shape)
 
             output_D = output_D.view(-1)
             for element in output_D:
@@ -109,23 +100,18 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
                 zeros1 = zeros1.cuda()
 
             D_loss_fake_img = D_loss_func(output_D, zeros1)
-            #print(fake_input.shape)
             error_D = D_loss_real_img + D_loss_fake_img
             error_D.backward(retain_graph=True)
             D_optim.step()
-            #print('yeah')
             
             # Training the Generator
             G.zero_grad()
-            #print(fake_input.shape, real_img.shape)
-            #print(noise1.shape)
 
             output_D = D(fake_input.detach()).view(-1)
 
             ones1 = Variable(torch.ones(real_img.size()[0]))
             if torch.cuda.is_available():
                 ones1 = ones1.cuda()
-            #print('almost')
 
             G_content_loss = content_loss_func(fake_input, real_img.float())
             G_adv_loss = adv_loss_func(output_D, ones1.float())
@@ -138,11 +124,8 @@ def training_GAN(batch_size, gen_lr, dis_lr, epochs, resid_block_num, num_channe
 
             '''###############################################################################################'''
 
-            #print('almost there')
-            #print(G_content_loss, G_adv_loss, G_content_loss.shape, G_adv_loss.shape)
             actual_G_loss.backward()
             G_optim.step()
-            #print("here")
             valid_loss_G, train_loss_G, psnr_G = evaluate_valid(val_loader, actual_G_loss.item(), fake_input, content_loss_func, adv_loss_func, train_loss_G, G, D)
 
 
@@ -245,7 +228,7 @@ def evaluate_valid(valid_loader, actual_G_loss1, fake_input1, content_loss_func,
         ones11 = ones11.cuda()
 
     G_adv_l = adv_loss_func(output_val, ones11.float())
-    total_loss_G = G_content_l + 1e-3 * G_adv_l  # prob wanna change this code
+    total_loss_G = G_content_l + 1e-3 * G_adv_l
     valid_loss_G.append(total_loss_G.item())
     return valid_loss_G, training_loss_G, psnr_G
 
@@ -254,7 +237,6 @@ def evaluate(noise_output, real_img):
     batch_size = real_img.shape[0]
     psnr_G_np = np.zeros(batch_size)
 
-    #print('shape', noise_output.shape)
     for i in range(batch_size):
         psnr_G_np[i] = compare_psnr(real_img[i], noise_output[i])
     total_psnr_G = np.sum(psnr_G_np)
@@ -323,8 +305,6 @@ if __name__ == "__main__":
         HR_valid[i] = np.array(HR_valid[i])[0:162 * 4, 0:139 * 4, :]
     for i in range(len(HR_test)):
         HR_test[i] = np.array(HR_test[i])[0:162 * 4, 0:139 * 4, :]
-
-    #print("Doing datasets")
 
     LR_train = np.array(LR_train)[0:int(len(LR_train)/6)]
     HR_train = np.array(HR_train)[0:int(len(HR_train)/6)]

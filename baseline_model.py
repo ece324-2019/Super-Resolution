@@ -1,8 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plot
+from skimage import io
+from skimage.measure import compare_psnr
+import torch
 
 
-def average(img):
+def average1(img):
     # create an empty array with 4x size of the original image
     new_img = np.array([[[0., 0., 0.]] * 2 * len(img[0])] * 2 * len(img))
     img = img[:,:,0:3]
@@ -38,18 +41,35 @@ def average(img):
 
 
 def main():
-    img_name = '16_0'
+    #img_name = 'test_img_to_present/LR/'
+    img_name = '39_0'
+    #img_num = '1553_0'
+    #img_num1 = '1553'
     ext = '.png'
-
+    #img_HR1 = 'test_img_to_present/HR/'
+    #img_HR11 = img_HR1 + img_num1 + ext
     # load image
     print(img_name+ext)
+    #print(img_name+img_num+ext)
+    #img = plot.imread(img_name +img_num+ ext)
     img = plot.imread(img_name + ext)
 
-    img = average(average(img))
+    img = average1(average1(img))
 
-    plot.imsave('improved' + img_name + ext, img)
+    plot.imsave('Baseline_Model/' + img_name + ext, img)
     plot.imshow(img)
+    plot.title('Baseline')
     plot.show()
+
+    #img_HR11 = plot.imread(img_HR11)
+    #img_HR11A = torch.tensor(img_HR11).float()
+    #imgA = torch.tensor(img).float()
+
+    #print(img_HR11.shape, img.shape)
+    #print(img_HR11A.dtype, imgA.dtype)
+
+    #psnr_G = compare_psnr(img_HR11A, imgA)
+    #print("PSNR value for the generated image =", psnr_G)
 
 
 if __name__ == '__main__':

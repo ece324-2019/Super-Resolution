@@ -7,7 +7,6 @@ import numpy as np
 import torch.utils.data as data
 from skimage.transform import resize
 from skimage.measure import compare_psnr
-from tqdm import tqdm
 from torch.autograd import Variable
 
 import torchvision.utils as utils # Used in Training loop
